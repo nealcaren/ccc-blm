@@ -2,9 +2,11 @@
 let dashboardData = null;
 let currentPage = 1;
 let pageSize = 10;
-let dailyChart = null;
+let weeklyChart = null;
 let monthlyChart = null;
 let selectedMonths = [];
+let currentDataType = 'count';
+let useLogScale = false;
 
 // Fetch and load the data
 async function loadData() {
@@ -18,7 +20,7 @@ async function loadData() {
         
         // Initialize the dashboard
         updateSummaryStats();
-        initializeChart();
+        initializeWeeklyChart();
         initializeMonthlyChart();
         updateTable();
         
@@ -40,16 +42,17 @@ function updateSummaryStats() {
     document.getElementById('top-state').textContent = `${topState[0]} (${topState[1]})`;
 }
 
-// Initialize the daily protest chart
-function initializeChart() {
-    const ctx = document.getElementById('daily-chart').getContext('2d');
+// Initialize the weekly protest chart
+function initializeWeeklyChart() {
+    const ctx = document.getElementById('weekly-chart').getContext('2d');
     
     // Prepare data for the chart
-    const dates = dashboardData.daily_counts.map(item => item.date);
-    const counts = dashboardData.daily_counts.map(item => item.count);
+    const dates = dashboardData.weekly_counts.map(item => item.start_date);
+    const counts = dashboardData.weekly_counts.map(item => item.count);
+    const protesterCounts = dashboardData.weekly_counts.map(item => item.protester_count);
     
     // Create the chart
-    dailyChart = new Chart(ctx, {
+    weeklyChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: dates,
@@ -75,7 +78,8 @@ function initializeChart() {
                     }
                 },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    type: 'linear'
                 }
             },
             plugins: {
@@ -90,6 +94,50 @@ function initializeChart() {
             }
         }
     });
+    
+    // Add event listeners for chart controls
+    document.querySelectorAll('input[name="dataType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            currentDataType = this.value;
+            updateWeeklyChart();
+        });
+    });
+    
+    document.getElementById('logScale').addEventListener('change', function() {
+        useLogScale = this.checked;
+        updateWeeklyChart();
+    });
+}
+
+// Update the weekly chart based on selected options
+function updateWeeklyChart() {
+    const dates = dashboardData.weekly_counts.map(item => item.start_date);
+    
+    // Get the appropriate data based on selection
+    let data, label;
+    if (currentDataType === 'count') {
+        data = dashboardData.weekly_counts.map(item => item.count);
+        label = 'Number of Protests';
+    } else {
+        data = dashboardData.weekly_counts.map(item => item.protester_count);
+        label = 'Number of Protesters';
+    }
+    
+    // Update chart data
+    weeklyChart.data.datasets[0].data = data;
+    weeklyChart.data.datasets[0].label = label;
+    
+    // Update scale type
+    weeklyChart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
+    
+    // If using log scale, ensure we don't have zero values
+    if (useLogScale) {
+        weeklyChart.options.scales.y.min = Math.max(1, Math.min(...data.filter(val => val > 0)));
+    } else {
+        weeklyChart.options.scales.y.min = 0;
+    }
+    
+    weeklyChart.update();
 }
 
 // Initialize the monthly protest chart with selection capability

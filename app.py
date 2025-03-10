@@ -12,10 +12,14 @@ def process_data():
     # Convert date to datetime
     df['date'] = pd.to_datetime(df['date'])
     
-    # Create daily protest counts
-    daily_counts = df.groupby('date').size().reset_index()
-    daily_counts.columns = ['date', 'count']
-    daily_counts['date'] = daily_counts['date'].dt.strftime('%Y-%m-%d')
+    # Create weekly protest counts
+    df['week'] = df['date'].dt.strftime('%Y-%W')
+    weekly_counts = df.groupby('week').agg(
+        count=('date', 'size'),
+        start_date=('date', 'min'),
+        protester_count=('size_mean_imputed', 'sum')
+    ).reset_index()
+    weekly_counts['start_date'] = weekly_counts['start_date'].dt.strftime('%Y-%m-%d')
     
     # Create monthly protest counts
     df['month'] = df['date'].dt.strftime('%Y-%m')
@@ -39,9 +43,17 @@ def process_data():
     df['size_mean_imputed'] = df['size_mean'].fillna(11)
     total_protesters = int(df['size_mean_imputed'].sum())
     
+    # Calculate daily protester counts
+    daily_protester_counts = df.groupby('date').agg(
+        count=('date', 'size'),
+        protester_count=('size_mean_imputed', 'sum')
+    ).reset_index()
+    daily_protester_counts['date'] = daily_protester_counts['date'].dt.strftime('%Y-%m-%d')
+    
     # Create the output data structure
     output_data = {
-        'daily_counts': daily_counts.to_dict('records'),
+        'weekly_counts': weekly_counts.to_dict('records'),
+        'daily_protester_counts': daily_protester_counts.to_dict('records'),
         'monthly_counts': monthly_counts.to_dict('records'),
         'table_data': table_records,
         'total_protests': len(df),
