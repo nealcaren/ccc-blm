@@ -3,8 +3,8 @@ let dashboardData = null;
 let currentPage = 1;
 let pageSize = 10;
 let weeklyChart = null;
-let monthlyChart = null;
-let selectedMonths = [];
+let phaseChart = null;
+let currentPhase = 1;
 let currentDataType = 'count';
 let useLogScale = false;
 
@@ -20,8 +20,8 @@ async function loadData() {
         
         // Initialize the dashboard
         updateSummaryStats();
+        initializePhaseChart();
         initializeWeeklyChart();
-        initializeMonthlyChart();
         updateTable();
         
     } catch (error) {
@@ -141,16 +141,16 @@ function updateWeeklyChart() {
     weeklyChart.update();
 }
 
-// Initialize the monthly protest chart with selection capability
-function initializeMonthlyChart() {
-    const ctx = document.getElementById('monthly-chart').getContext('2d');
+// Initialize the phased visualization chart
+function initializePhaseChart() {
+    const ctx = document.getElementById('phase-chart').getContext('2d');
     
-    // Prepare data for the chart
-    const months = dashboardData.monthly_counts.map(item => item.month);
-    const counts = dashboardData.monthly_counts.map(item => item.count);
+    // Initial data for Phase 1
+    const months = dashboardData.phase1_monthly.map(item => item.month);
+    const counts = dashboardData.phase1_monthly.map(item => item.count);
     
     // Create the chart
-    monthlyChart = new Chart(ctx, {
+    phaseChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: months,
@@ -185,58 +185,154 @@ function initializeMonthlyChart() {
                     display: true,
                     position: 'top'
                 }
-            },
-            onClick: (e, elements) => {
-                if (elements.length > 0) {
-                    const index = elements[0].index;
-                    const month = months[index];
-                    
-                    // Toggle selection of this month
-                    const monthIndex = selectedMonths.indexOf(month);
-                    if (monthIndex === -1) {
-                        selectedMonths.push(month);
-                    } else {
-                        selectedMonths.splice(monthIndex, 1);
-                    }
-                    
-                    updateMonthlyChart();
-                }
             }
         }
     });
     
-    // Add event listener for reset button
-    document.getElementById('reset-months').addEventListener('click', () => {
-        selectedMonths = [];
-        updateMonthlyChart();
+    // Add event listeners for phase navigation
+    document.getElementById('next-phase').addEventListener('click', () => {
+        if (currentPhase < 3) {
+            currentPhase++;
+            updatePhaseChart();
+        }
+    });
+    
+    document.getElementById('prev-phase').addEventListener('click', () => {
+        if (currentPhase > 1) {
+            currentPhase--;
+            updatePhaseChart();
+        }
     });
 }
 
-// Update the monthly chart based on selections
-function updateMonthlyChart() {
-    const months = dashboardData.monthly_counts.map(item => item.month);
-    const counts = dashboardData.monthly_counts.map(item => item.count);
+// Update the phase chart based on current phase
+function updatePhaseChart() {
+    // Update navigation buttons
+    document.getElementById('prev-phase').disabled = (currentPhase === 1);
+    document.getElementById('next-phase').disabled = (currentPhase === 3);
     
-    // Update background colors based on selection
-    const backgroundColors = months.map(month => 
-        selectedMonths.length === 0 || selectedMonths.includes(month) 
-            ? 'rgba(52, 58, 64, 0.7)' 
-            : 'rgba(200, 200, 200, 0.3)'
-    );
+    // Update title and description
+    const titleElement = document.getElementById('phase-title');
+    const descriptionElement = document.getElementById('phase-description');
     
-    monthlyChart.data.datasets[0].backgroundColor = backgroundColors;
+    let data, labels, chartType;
     
-    // If months are selected, adjust y-axis to fit selected data
-    if (selectedMonths.length > 0) {
-        const selectedCounts = counts.filter((_, i) => selectedMonths.includes(months[i]));
-        const maxCount = Math.max(...selectedCounts);
-        monthlyChart.options.scales.y.max = Math.ceil(maxCount * 1.1); // Add 10% padding
-    } else {
-        // Reset to auto scaling
-        monthlyChart.options.scales.y.max = undefined;
+    switch(currentPhase) {
+        case 1:
+            // Phase 1: Pre-Floyd monthly data
+            titleElement.textContent = 'The Story of Police Brutality Protests: Phase 1';
+            descriptionElement.textContent = 'Monthly protest counts before George Floyd\'s death (up to April 2020).';
+            
+            data = dashboardData.phase1_monthly.map(item => item.count);
+            labels = dashboardData.phase1_monthly.map(item => item.month);
+            chartType = 'bar';
+            break;
+            
+        case 2:
+            // Phase 2: Floyd protest surge (May-Oct 2020)
+            titleElement.textContent = 'The Story of Police Brutality Protests: Phase 2';
+            descriptionElement.textContent = 'The surge in protests following George Floyd\'s death (May-October 2020).';
+            
+            // Combine phase 1 and 2 data to show the dramatic increase
+            const phase1Data = dashboardData.phase1_monthly;
+            const phase2Data = dashboardData.phase2_monthly;
+            
+            // Create a combined dataset with all months
+            const allMonths = [...new Set([
+                ...phase1Data.map(item => item.month),
+                ...phase2Data.map(item => item.month)
+            ])].sort();
+            
+            // Create a lookup for counts
+            const countLookup = {};
+            phase1Data.forEach(item => { countLookup[item.month] = item.count });
+            phase2Data.forEach(item => { countLookup[item.month] = item.count });
+            
+            labels = allMonths;
+            data = allMonths.map(month => countLookup[month] || 0);
+            
+            // Highlight the Floyd protest period
+            const backgroundColors = allMonths.map(month => {
+                if (month >= '2020-05' && month <= '2020-10') {
+                    return 'rgba(220, 53, 69, 0.7)'; // Red for Floyd period
+                }
+                return 'rgba(52, 58, 64, 0.7)'; // Default color
+            });
+            
+            phaseChart.data.datasets[0].backgroundColor = backgroundColors;
+            chartType = 'bar';
+            break;
+            
+        case 3:
+            // Phase 3: Weekly data since November 2020
+            titleElement.textContent = 'The Story of Police Brutality Protests: Phase 3';
+            descriptionElement.textContent = 'Weekly protest counts since November 2020 to present.';
+            
+            data = dashboardData.phase3_weekly.map(item => item.count);
+            labels = dashboardData.phase3_weekly.map(item => item.start_date);
+            chartType = 'line';
+            break;
     }
     
-    monthlyChart.update();
+    // Update chart type if needed
+    if (phaseChart.config.type !== chartType) {
+        phaseChart.destroy();
+        
+        phaseChart = new Chart(document.getElementById('phase-chart').getContext('2d'), {
+            type: chartType,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Number of Protests',
+                    data: data,
+                    backgroundColor: chartType === 'line' ? 'rgba(52, 58, 64, 0.2)' : 'rgba(52, 58, 64, 0.7)',
+                    borderColor: 'rgba(52, 58, 64, 1)',
+                    borderWidth: 1,
+                    pointRadius: chartType === 'line' ? 0 : undefined,
+                    pointHitRadius: chartType === 'line' ? 10 : undefined,
+                    tension: chartType === 'line' ? 0.1 : undefined
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            maxTicksLimit: chartType === 'line' ? 20 : undefined
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    } else {
+        // Just update the data
+        phaseChart.data.labels = labels;
+        phaseChart.data.datasets[0].data = data;
+        
+        // Reset background colors if not explicitly set
+        if (currentPhase !== 2) {
+            const defaultColor = chartType === 'line' ? 'rgba(52, 58, 64, 0.2)' : 'rgba(52, 58, 64, 0.7)';
+            phaseChart.data.datasets[0].backgroundColor = defaultColor;
+        }
+        
+        phaseChart.update();
+    }
 }
 
 // Update the data table
