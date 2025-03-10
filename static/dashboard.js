@@ -215,94 +215,92 @@ function updatePhaseChart() {
     const titleElement = document.getElementById('phase-title');
     const descriptionElement = document.getElementById('phase-description');
     
-    let data, labels, chartType;
+    let data, labels, chartType, backgroundColors;
     
-    switch(currentPhase) {
-        case 1:
-            // Phase 1: Pre-Floyd monthly data
-            titleElement.textContent = 'The Story of Police Brutality Protests: Phase 1';
-            descriptionElement.textContent = 'Monthly protest counts before George Floyd\'s death (up to April 2020).';
-            
-            data = dashboardData.phase1_monthly.map(item => item.count);
-            labels = dashboardData.phase1_monthly.map(item => item.month);
-            chartType = 'bar';
-            break;
-            
-        case 2:
-            // Phase 2: Floyd protest surge (May-Oct 2020)
-            titleElement.textContent = 'The Story of Police Brutality Protests: Phase 2';
-            descriptionElement.textContent = 'The surge in protests following George Floyd\'s death (May-October 2020).';
-            
-            // Combine phase 1 and 2 data to show the dramatic increase
-            const phase1Data = dashboardData.phase1_monthly;
-            const phase2Data = dashboardData.phase2_monthly;
-            
-            // Create a combined dataset with all months
-            const allMonths = [...new Set([
-                ...phase1Data.map(item => item.month),
-                ...phase2Data.map(item => item.month)
-            ])].sort();
-            
-            // Create a lookup for counts
-            const countLookup = {};
-            phase1Data.forEach(item => { countLookup[item.month] = item.count });
-            phase2Data.forEach(item => { countLookup[item.month] = item.count });
-            
-            labels = allMonths;
-            data = allMonths.map(month => countLookup[month] || 0);
-            
-            // Highlight the Floyd protest period
-            const backgroundColors = allMonths.map(month => {
-                if (month >= '2020-05' && month <= '2020-10') {
-                    return '#fc8d59'; // Orange-red for Floyd period
-                }
-                return '#ffffbf'; // Light yellow for pre-Floyd period
-            });
-            
-            phaseChart.data.datasets[0].backgroundColor = backgroundColors;
-            chartType = 'bar';
-            break;
-            
-        case 3:
-            // Phase 3: All data with color coding by period
-            titleElement.textContent = 'The Story of Police Brutality Protests: Phase 3';
-            descriptionElement.textContent = 'Monthly protest counts across all periods, color-coded by phase.';
-            
-            // Combine all phase data to show the complete timeline
-            const allPhase1Data = dashboardData.phase1_monthly;
-            const allPhase2Data = dashboardData.phase2_monthly;
-            const allPhase3Data = dashboardData.phase3_monthly;
-            
-            // Create a combined dataset with all months
-            const phase3AllMonths = [...new Set([
-                ...allPhase1Data.map(item => item.month),
-                ...allPhase2Data.map(item => item.month),
-                ...allPhase3Data.map(item => item.month)
-            ])].sort();
-            
-            // Create a lookup for counts
-            const phase3CountLookup = {};
-            allPhase1Data.forEach(item => { phase3CountLookup[item.month] = item.count });
-            allPhase2Data.forEach(item => { phase3CountLookup[item.month] = item.count });
-            allPhase3Data.forEach(item => { phase3CountLookup[item.month] = item.count });
-            
-            labels = phase3AllMonths;
-            data = phase3AllMonths.map(month => phase3CountLookup[month] || 0);
-            
-            // Color-code by period
-            const backgroundColors = phase3AllMonths.map(month => {
-                if (month <= '2020-04') {
-                    return '#ffffbf'; // Light yellow for pre-Floyd period (Phase 1)
-                } else if (month >= '2020-05' && month <= '2020-10') {
-                    return '#fc8d59'; // Orange-red for Floyd period (Phase 2)
-                } else {
-                    return '#91bfdb'; // Blue for post-Floyd period (Phase 3)
-                }
-            });
-            
-            phaseChart.data.datasets[0].backgroundColor = backgroundColors;
-            chartType = 'bar';
-            break;
+    // Prepare data based on current phase
+    if (currentPhase === 1) {
+        // Phase 1: Pre-Floyd monthly data
+        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 1';
+        descriptionElement.textContent = 'Monthly protest counts before George Floyd\'s death (up to April 2020).';
+        
+        data = dashboardData.phase1_monthly.map(item => item.count);
+        labels = dashboardData.phase1_monthly.map(item => item.month);
+        chartType = 'bar';
+        backgroundColors = '#ffffbf'; // Light yellow for Phase 1
+        
+    } else if (currentPhase === 2) {
+        // Phase 2: Floyd protest surge (May-Oct 2020)
+        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 2';
+        descriptionElement.textContent = 'The surge in protests following George Floyd\'s death (May-October 2020).';
+        
+        // Combine phase 1 and 2 data to show the dramatic increase
+        const phase1Data = dashboardData.phase1_monthly;
+        const phase2Data = dashboardData.phase2_monthly;
+        
+        // Create a combined dataset with all months
+        const allMonths = [...new Set([
+            ...phase1Data.map(item => item.month),
+            ...phase2Data.map(item => item.month)
+        ])].sort();
+        
+        // Create a lookup for counts
+        const countLookup = {};
+        phase1Data.forEach(item => { countLookup[item.month] = item.count });
+        phase2Data.forEach(item => { countLookup[item.month] = item.count });
+        
+        labels = allMonths;
+        data = allMonths.map(month => countLookup[month] || 0);
+        
+        // Highlight the Floyd protest period
+        backgroundColors = allMonths.map(month => {
+            if (month >= '2020-05' && month <= '2020-10') {
+                return '#fc8d59'; // Orange-red for Floyd period
+            }
+            return '#ffffbf'; // Light yellow for pre-Floyd period
+        });
+        
+        chartType = 'bar';
+        
+    } else if (currentPhase === 3) {
+        // Phase 3: All data with color coding by period
+        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 3';
+        descriptionElement.textContent = 'Monthly protest counts across all periods, color-coded by phase.';
+        
+        // Combine all phase data to show the complete timeline
+        const phaseData = {
+            phase1: dashboardData.phase1_monthly,
+            phase2: dashboardData.phase2_monthly,
+            phase3: dashboardData.phase3_monthly
+        };
+        
+        // Create a combined dataset with all months
+        const allMonths = [...new Set([
+            ...phaseData.phase1.map(item => item.month),
+            ...phaseData.phase2.map(item => item.month),
+            ...phaseData.phase3.map(item => item.month)
+        ])].sort();
+        
+        // Create a lookup for counts
+        const countLookup = {};
+        phaseData.phase1.forEach(item => { countLookup[item.month] = item.count });
+        phaseData.phase2.forEach(item => { countLookup[item.month] = item.count });
+        phaseData.phase3.forEach(item => { countLookup[item.month] = item.count });
+        
+        labels = allMonths;
+        data = allMonths.map(month => countLookup[month] || 0);
+        
+        // Color-code by period
+        backgroundColors = allMonths.map(month => {
+            if (month <= '2020-04') {
+                return '#ffffbf'; // Light yellow for pre-Floyd period (Phase 1)
+            } else if (month >= '2020-05' && month <= '2020-10') {
+                return '#fc8d59'; // Orange-red for Floyd period (Phase 2)
+            } else {
+                return '#91bfdb'; // Blue for post-Floyd period (Phase 3)
+            }
+        });
+        
+        chartType = 'bar';
     }
     
     // Update chart type if needed
@@ -316,8 +314,7 @@ function updatePhaseChart() {
                 datasets: [{
                     label: 'Number of Protests',
                     data: data,
-                    backgroundColor: currentPhase === 3 ? 'rgba(145, 191, 219, 0.2)' : 
-                                    (currentPhase === 2 ? '#fc8d59' : '#ffffbf'),
+                    backgroundColor: backgroundColors,
                     borderColor: currentPhase === 3 ? '#91bfdb' : 
                                (currentPhase === 2 ? '#e67e4d' : '#d9d99e'),
                     borderWidth: 1,
@@ -357,15 +354,7 @@ function updatePhaseChart() {
         // Just update the data
         phaseChart.data.labels = labels;
         phaseChart.data.datasets[0].data = data;
-        
-        // Set appropriate colors for each phase
-        if (currentPhase === 1) {
-            phaseChart.data.datasets[0].backgroundColor = '#ffffbf'; // Light yellow for Phase 1
-            phaseChart.data.datasets[0].borderColor = '#d9d99e';
-        } else if (currentPhase === 3) {
-            phaseChart.data.datasets[0].backgroundColor = chartType === 'line' ? 'rgba(145, 191, 219, 0.2)' : '#91bfdb'; // Blue for Phase 3
-            phaseChart.data.datasets[0].borderColor = '#91bfdb';
-        }
+        phaseChart.data.datasets[0].backgroundColor = backgroundColors;
         
         phaseChart.update();
     }
