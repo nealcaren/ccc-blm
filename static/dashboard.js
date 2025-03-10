@@ -157,8 +157,8 @@ function initializePhaseChart() {
             datasets: [{
                 label: 'Number of Protests',
                 data: counts,
-                backgroundColor: '#ffffbf', // Light yellow for Phase 1
-                borderColor: '#d9d99e', // Darker border
+                backgroundColor: '#1b9e77', // Green for Phase 1
+                borderColor: '#1b9e77', // Darker border
                 borderWidth: 1
             }]
         },
