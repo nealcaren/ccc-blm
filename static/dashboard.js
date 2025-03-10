@@ -269,22 +269,22 @@ function updatePhaseChart() {
             descriptionElement.textContent = 'Monthly protest counts across all periods, color-coded by phase.';
             
             // Combine all phase data to show the complete timeline
-            const phase1Data = dashboardData.phase1_monthly;
-            const phase2Data = dashboardData.phase2_monthly;
-            const phase3Data = dashboardData.phase3_monthly;
+            const allPhase1Data = dashboardData.phase1_monthly;
+            const allPhase2Data = dashboardData.phase2_monthly;
+            const allPhase3Data = dashboardData.phase3_monthly;
             
             // Create a combined dataset with all months
             const allMonths = [...new Set([
-                ...phase1Data.map(item => item.month),
-                ...phase2Data.map(item => item.month),
-                ...phase3Data.map(item => item.month)
+                ...allPhase1Data.map(item => item.month),
+                ...allPhase2Data.map(item => item.month),
+                ...allPhase3Data.map(item => item.month)
             ])].sort();
             
             // Create a lookup for counts
             const countLookup = {};
-            phase1Data.forEach(item => { countLookup[item.month] = item.count });
-            phase2Data.forEach(item => { countLookup[item.month] = item.count });
-            phase3Data.forEach(item => { countLookup[item.month] = item.count });
+            allPhase1Data.forEach(item => { countLookup[item.month] = item.count });
+            allPhase2Data.forEach(item => { countLookup[item.month] = item.count });
+            allPhase3Data.forEach(item => { countLookup[item.month] = item.count });
             
             labels = allMonths;
             data = allMonths.map(month => countLookup[month] || 0);
