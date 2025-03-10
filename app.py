@@ -12,6 +12,7 @@ def process_data():
     # Convert date to datetime
     df['date'] = pd.to_datetime(df['date'])
     
+    
     # Create weekly protest counts
     df['week'] = df['date'].dt.strftime('%Y-%W')
     weekly_counts = df.groupby('week').agg(
