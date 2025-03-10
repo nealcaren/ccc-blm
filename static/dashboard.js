@@ -274,7 +274,7 @@ function updatePhaseChart() {
             const allPhase3Data = dashboardData.phase3_monthly;
             
             // Create a combined dataset with all months
-            const allMonths = [...new Set([
+            const phase3AllMonths = [...new Set([
                 ...allPhase1Data.map(item => item.month),
                 ...allPhase2Data.map(item => item.month),
                 ...allPhase3Data.map(item => item.month)
@@ -286,11 +286,11 @@ function updatePhaseChart() {
             allPhase2Data.forEach(item => { countLookup[item.month] = item.count });
             allPhase3Data.forEach(item => { countLookup[item.month] = item.count });
             
-            labels = allMonths;
-            data = allMonths.map(month => countLookup[month] || 0);
+            labels = phase3AllMonths;
+            data = phase3AllMonths.map(month => countLookup[month] || 0);
             
             // Color-code by period
-            const backgroundColors = allMonths.map(month => {
+            const backgroundColors = phase3AllMonths.map(month => {
                 if (month <= '2020-04') {
                     return '#ffffbf'; // Light yellow for pre-Floyd period (Phase 1)
                 } else if (month >= '2020-05' && month <= '2020-10') {
