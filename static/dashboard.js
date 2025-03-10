@@ -281,13 +281,13 @@ function updatePhaseChart() {
             ])].sort();
             
             // Create a lookup for counts
-            const countLookup = {};
-            allPhase1Data.forEach(item => { countLookup[item.month] = item.count });
-            allPhase2Data.forEach(item => { countLookup[item.month] = item.count });
-            allPhase3Data.forEach(item => { countLookup[item.month] = item.count });
+            const phase3CountLookup = {};
+            allPhase1Data.forEach(item => { phase3CountLookup[item.month] = item.count });
+            allPhase2Data.forEach(item => { phase3CountLookup[item.month] = item.count });
+            allPhase3Data.forEach(item => { phase3CountLookup[item.month] = item.count });
             
             labels = phase3AllMonths;
-            data = phase3AllMonths.map(month => countLookup[month] || 0);
+            data = phase3AllMonths.map(month => phase3CountLookup[month] || 0);
             
             // Color-code by period
             const backgroundColors = phase3AllMonths.map(month => {
