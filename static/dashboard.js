@@ -270,7 +270,7 @@ function updatePhaseChart() {
             
             data = dashboardData.phase3_weekly.map(item => item.count);
             labels = dashboardData.phase3_weekly.map(item => item.start_date);
-            chartType = 'line';
+            chartType = 'bar';
             break;
     }
     
