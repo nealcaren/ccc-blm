@@ -42,95 +42,10 @@ function updateSummaryStats() {
     document.getElementById('top-state').textContent = `${topState[0]} (${topState[1]})`;
 }
 
-// Custom plugin for broken axis
-const breakAxisPlugin = {
-    id: 'breakAxis',
-    beforeDraw: (chart, args, options) => {
-        if (!chart.options.plugins.breakAxis) return;
-        
-        const ctx = chart.ctx;
-        const chartArea = chart.chartArea;
-        const settings = chart.options.plugins.breakAxisSettings || {};
-        const breakValue = settings.breakValue || 500;
-        const topSpaceRatio = settings.topSpaceRatio || 0.3;
-        
-        // Calculate the break position
-        const yScale = chart.scales.y;
-        const normalRange = chartArea.bottom - chartArea.top;
-        const breakPosition = chartArea.bottom - normalRange * (1 - topSpaceRatio);
-        
-        // Draw the break markers
-        ctx.save();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#666';
-        
-        // Draw zigzag break line
-        ctx.beginPath();
-        const zigzagWidth = 10;
-        const zigzagHeight = 8;
-        let x = chartArea.left - 5;
-        let y = breakPosition;
-        
-        ctx.moveTo(x, y);
-        for (let i = 0; i < Math.ceil((chartArea.right - chartArea.left + 10) / zigzagWidth); i++) {
-            y = breakPosition + ((i % 2) * zigzagHeight);
-            x += zigzagWidth;
-            ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-        
-        // Adjust the scale
-        const maxValue = Math.max(...chart.data.datasets[0].data);
-        const minValue = 0;
-        
-        // Map values for display
-        chart.data.datasets.forEach(dataset => {
-            dataset._originalData = dataset._originalData || [...dataset.data];
-            
-            dataset.data = dataset._originalData.map(value => {
-                if (value <= breakValue) {
-                    // Values below break point are scaled normally
-                    return value;
-                } else {
-                    // Values above break point are scaled to fit in the top section
-                    const topRangeRatio = (value - breakValue) / (maxValue - breakValue);
-                    return breakValue + (topRangeRatio * breakValue * topSpaceRatio / (1 - topSpaceRatio));
-                }
-            });
-        });
-        
-        // Custom ticks for the broken scale
-        yScale.options.ticks.callback = function(value) {
-            if (value <= breakValue) {
-                return value;
-            } else {
-                // Calculate the original value this represents
-                const topRangeRatio = (value - breakValue) / (breakValue * topSpaceRatio / (1 - topSpaceRatio));
-                const originalValue = breakValue + (topRangeRatio * (maxValue - breakValue));
-                return Math.round(originalValue);
-            }
-        };
-        
-        ctx.restore();
-    },
-    afterDraw: (chart) => {
-        if (!chart.options.plugins.breakAxis) {
-            // Restore original data when not using broken axis
-            chart.data.datasets.forEach(dataset => {
-                if (dataset._originalData) {
-                    dataset.data = [...dataset._originalData];
-                }
-            });
-        }
-    }
-};
 
 // Initialize the weekly protest chart
 function initializeWeeklyChart() {
     const ctx = document.getElementById('weekly-chart').getContext('2d');
-    
-    // Register the custom plugin
-    Chart.register(breakAxisPlugin);
     
     // Prepare data for the chart
     const dates = dashboardData.weekly_counts.map(item => item.start_date);
@@ -171,34 +86,11 @@ function initializeWeeklyChart() {
             plugins: {
                 tooltip: {
                     mode: 'index',
-                    intersect: false,
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            
-                            // Use original data for tooltip if available
-                            if (context.dataset._originalData && 
-                                context.dataIndex < context.dataset._originalData.length) {
-                                label += context.dataset._originalData[context.dataIndex];
-                            } else {
-                                label += context.parsed.y;
-                            }
-                            
-                            return label;
-                        }
-                    }
+                    intersect: false
                 },
                 legend: {
                     display: true,
                     position: 'top'
-                },
-                breakAxis: true,
-                breakAxisSettings: {
-                    breakValue: 500,
-                    topSpaceRatio: 0.3
                 }
             }
         }
@@ -236,29 +128,14 @@ function updateWeeklyChart() {
     weeklyChart.data.datasets[0].data = data;
     weeklyChart.data.datasets[0].label = label;
     
+    // Update scale type
+    weeklyChart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
+    
+    // If using log scale, ensure we don't have zero values
     if (useLogScale) {
-        // Log scale mode
-        weeklyChart.options.scales.y.type = 'logarithmic';
         weeklyChart.options.scales.y.min = Math.max(1, Math.min(...data.filter(val => val > 0)));
-        weeklyChart.options.plugins.breakAxis = false; // Disable break axis in log mode
     } else {
-        // Linear scale with broken axis
-        weeklyChart.options.scales.y.type = 'linear';
         weeklyChart.options.scales.y.min = 0;
-        
-        // Enable broken axis plugin
-        weeklyChart.options.plugins.breakAxis = true;
-        
-        // Find a good break point - typically around 500 or based on data distribution
-        const sortedData = [...data].sort((a, b) => a - b);
-        const threshold = sortedData.length > 0 ? 
-            Math.min(500, sortedData[Math.floor(sortedData.length * 0.95)]) : 500;
-        
-        // Set up the break configuration
-        weeklyChart.options.plugins.breakAxisSettings = {
-            breakValue: threshold,
-            topSpaceRatio: 0.3, // 30% of chart height for values above threshold
-        };
     }
     
     weeklyChart.update();
