@@ -13,6 +13,8 @@ def process_data():
     df['date'] = pd.to_datetime(df['date'])
     
     
+    df['size_mean_imputed'] = df['size_mean'].fillna(11)
+    
     # Create weekly protest counts
     df['week'] = df['date'].dt.strftime('%Y-%W')
     weekly_counts = df.groupby('week').agg(
