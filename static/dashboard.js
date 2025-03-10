@@ -226,7 +226,7 @@ function updatePhaseChart() {
         data = dashboardData.phase1_monthly.map(item => item.count);
         labels = dashboardData.phase1_monthly.map(item => item.month);
         chartType = 'bar';
-        backgroundColors = '#ffffbf'; // Light yellow for Phase 1
+        backgroundColors = '#1b9e77'; // Green for Phase 1
         
     } else if (currentPhase === 2) {
         // Phase 2: Floyd protest surge (May-Oct 2020)
@@ -254,9 +254,9 @@ function updatePhaseChart() {
         // Highlight the Floyd protest period
         backgroundColors = allMonths.map(month => {
             if (month >= '2020-05' && month <= '2020-10') {
-                return '#fc8d59'; // Orange-red for Floyd period
+                return '#d95f02'; // Orange for Floyd period
             }
-            return '#ffffbf'; // Light yellow for pre-Floyd period
+            return '#1b9e77'; // Green for pre-Floyd period
         });
         
         chartType = 'bar';
@@ -292,11 +292,11 @@ function updatePhaseChart() {
         // Color-code by period
         backgroundColors = allMonths.map(month => {
             if (month <= '2020-04') {
-                return '#ffffbf'; // Light yellow for pre-Floyd period (Phase 1)
+                return '#1b9e77'; // Green for pre-Floyd period (Phase 1)
             } else if (month >= '2020-05' && month <= '2020-10') {
-                return '#fc8d59'; // Orange-red for Floyd period (Phase 2)
+                return '#d95f02'; // Orange for Floyd period (Phase 2)
             } else {
-                return '#91bfdb'; // Blue for post-Floyd period (Phase 3)
+                return '#7570b3'; // Purple for post-Floyd period (Phase 3)
             }
         });
         
