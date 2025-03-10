@@ -89,8 +89,7 @@ function initializeWeeklyChart() {
                     intersect: false
                 },
                 legend: {
-                    display: true,
-                    position: 'top'
+                    display: false
                 }
             }
         }
@@ -344,8 +343,7 @@ function updatePhaseChart() {
                         intersect: false
                     },
                     legend: {
-                        display: true,
-                        position: 'top'
+                        display: false
                     }
                 }
             }
