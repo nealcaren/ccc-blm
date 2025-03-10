@@ -7,7 +7,7 @@ def process_data():
     """Process the CSV data and create a JSON file for the dashboard"""
     # Read the CSV file
     csv_path = 'police_brutality_protests.csv'
-    df = pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path, low_memory=False)
     
     # Convert date to datetime
     df['date'] = pd.to_datetime(df['date'])
