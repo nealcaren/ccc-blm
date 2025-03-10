@@ -3,6 +3,8 @@ let dashboardData = null;
 let currentPage = 1;
 let pageSize = 10;
 let dailyChart = null;
+let monthlyChart = null;
+let selectedMonths = [];
 
 // Fetch and load the data
 async function loadData() {
@@ -17,6 +19,7 @@ async function loadData() {
         // Initialize the dashboard
         updateSummaryStats();
         initializeChart();
+        initializeMonthlyChart();
         updateTable();
         
     } catch (error) {
@@ -30,7 +33,7 @@ async function loadData() {
 // Update summary statistics
 function updateSummaryStats() {
     document.getElementById('total-protests').textContent = dashboardData.total_protests.toLocaleString();
-    document.getElementById('date-range').textContent = `${dashboardData.date_range.start} to ${dashboardData.date_range.end}`;
+    document.getElementById('total-protesters').textContent = dashboardData.total_protesters.toLocaleString();
     
     // Get the top state
     const topState = Object.entries(dashboardData.top_states)[0];
@@ -87,6 +90,104 @@ function initializeChart() {
             }
         }
     });
+}
+
+// Initialize the monthly protest chart with selection capability
+function initializeMonthlyChart() {
+    const ctx = document.getElementById('monthly-chart').getContext('2d');
+    
+    // Prepare data for the chart
+    const months = dashboardData.monthly_counts.map(item => item.month);
+    const counts = dashboardData.monthly_counts.map(item => item.count);
+    
+    // Create the chart
+    monthlyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Number of Protests',
+                data: counts,
+                backgroundColor: 'rgba(52, 58, 64, 0.7)',
+                borderColor: 'rgba(52, 58, 64, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                },
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            onClick: (e, elements) => {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    const month = months[index];
+                    
+                    // Toggle selection of this month
+                    const monthIndex = selectedMonths.indexOf(month);
+                    if (monthIndex === -1) {
+                        selectedMonths.push(month);
+                    } else {
+                        selectedMonths.splice(monthIndex, 1);
+                    }
+                    
+                    updateMonthlyChart();
+                }
+            }
+        }
+    });
+    
+    // Add event listener for reset button
+    document.getElementById('reset-months').addEventListener('click', () => {
+        selectedMonths = [];
+        updateMonthlyChart();
+    });
+}
+
+// Update the monthly chart based on selections
+function updateMonthlyChart() {
+    const months = dashboardData.monthly_counts.map(item => item.month);
+    const counts = dashboardData.monthly_counts.map(item => item.count);
+    
+    // Update background colors based on selection
+    const backgroundColors = months.map(month => 
+        selectedMonths.length === 0 || selectedMonths.includes(month) 
+            ? 'rgba(52, 58, 64, 0.7)' 
+            : 'rgba(200, 200, 200, 0.3)'
+    );
+    
+    monthlyChart.data.datasets[0].backgroundColor = backgroundColors;
+    
+    // If months are selected, adjust y-axis to fit selected data
+    if (selectedMonths.length > 0) {
+        const selectedCounts = counts.filter((_, i) => selectedMonths.includes(months[i]));
+        const maxCount = Math.max(...selectedCounts);
+        monthlyChart.options.scales.y.max = Math.ceil(maxCount * 1.1); // Add 10% padding
+    } else {
+        // Reset to auto scaling
+        monthlyChart.options.scales.y.max = undefined;
+    }
+    
+    monthlyChart.update();
 }
 
 // Update the data table

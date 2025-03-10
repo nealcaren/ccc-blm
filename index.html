@@ -67,8 +67,8 @@
             </div>
             <div class="col-md-4">
                 <div class="card stats-card">
-                    <div class="stats-number" id="date-range">--</div>
-                    <div class="stats-label">Date Range</div>
+                    <div class="stats-number" id="total-protesters">--</div>
+                    <div class="stats-label">Total Protesters</div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -84,6 +84,21 @@
             <div class="card-header">Daily Protest Count</div>
             <div class="card-body chart-container">
                 <canvas id="daily-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Monthly Protest Chart -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Monthly Protest Count</span>
+                    <div>
+                        <button id="reset-months" class="btn btn-sm btn-outline-secondary">Reset Selection</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body chart-container">
+                <canvas id="monthly-chart"></canvas>
             </div>
         </div>
         

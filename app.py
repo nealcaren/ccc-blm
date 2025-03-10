@@ -17,6 +17,11 @@ def process_data():
     daily_counts.columns = ['date', 'count']
     daily_counts['date'] = daily_counts['date'].dt.strftime('%Y-%m-%d')
     
+    # Create monthly protest counts
+    df['month'] = df['date'].dt.strftime('%Y-%m')
+    monthly_counts = df.groupby('month').size().reset_index()
+    monthly_counts.columns = ['month', 'count']
+    
     # Create a sample of the data for the table view
     # Select relevant columns
     table_data = df[['date', 'locality', 'state', 'type', 'claims', 'size_mean']].copy()
@@ -24,17 +29,23 @@ def process_data():
     # Format date
     table_data['date'] = table_data['date'].dt.strftime('%Y-%m-%d')
     
-    # Handle missing values
-    table_data['size_mean'] = table_data['size_mean'].fillna('Unknown')
+    # Handle missing values - impute unknown sizes with 11
+    table_data['size_mean'] = table_data['size_mean'].fillna(11)
     
     # Convert to records
     table_records = table_data.head(1000).to_dict('records')
     
+    # Calculate total protesters (imputing 11 for missing values)
+    df['size_mean_imputed'] = df['size_mean'].fillna(11)
+    total_protesters = int(df['size_mean_imputed'].sum())
+    
     # Create the output data structure
     output_data = {
         'daily_counts': daily_counts.to_dict('records'),
+        'monthly_counts': monthly_counts.to_dict('records'),
         'table_data': table_records,
         'total_protests': len(df),
+        'total_protesters': total_protesters,
         'date_range': {
             'start': df['date'].min().strftime('%Y-%m-%d'),
             'end': df['date'].max().strftime('%Y-%m-%d')
