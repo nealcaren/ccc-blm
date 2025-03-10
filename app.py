@@ -37,14 +37,10 @@ def process_data():
     phase2_monthly = phase2_data.groupby('month').size().reset_index()
     phase2_monthly.columns = ['month', 'count']
     
-    # Phase 3: Weekly counts since November 2020
+    # Phase 3: Monthly counts since November 2020
     phase3_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
-    phase3_data.loc[:, 'week'] = phase3_data['date'].dt.strftime('%Y-%W')  # Use .loc for assignment
-    phase3_weekly = phase3_data.groupby('week').agg(
-        count=('date', 'size'),
-        start_date=('date', 'min')
-    ).reset_index()
-    phase3_weekly['start_date'] = phase3_weekly['start_date'].dt.strftime('%Y-%m-%d')
+    phase3_monthly = phase3_data.groupby('month').size().reset_index()
+    phase3_monthly.columns = ['month', 'count']
     
     # Create a sample of the data for the table view
     # Select relevant columns
@@ -76,7 +72,7 @@ def process_data():
         'daily_protester_counts': daily_protester_counts.to_dict('records'),
         'phase1_monthly': phase1_monthly.to_dict('records'),
         'phase2_monthly': phase2_monthly.to_dict('records'),
-        'phase3_weekly': phase3_weekly.to_dict('records'),
+        'phase3_monthly': phase3_monthly.to_dict('records'),
         'table_data': table_records,
         'total_protests': len(df),
         'total_protesters': total_protesters,

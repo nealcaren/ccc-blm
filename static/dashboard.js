@@ -264,12 +264,12 @@ function updatePhaseChart() {
             break;
             
         case 3:
-            // Phase 3: Weekly data since November 2020
+            // Phase 3: Monthly data since November 2020
             titleElement.textContent = 'The Story of Police Brutality Protests: Phase 3';
-            descriptionElement.textContent = 'Weekly protest counts since November 2020 to present.';
+            descriptionElement.textContent = 'Monthly protest counts since November 2020 to present.';
             
-            data = dashboardData.phase3_weekly.map(item => item.count);
-            labels = dashboardData.phase3_weekly.map(item => item.start_date);
+            data = dashboardData.phase3_monthly.map(item => item.count);
+            labels = dashboardData.phase3_monthly.map(item => item.month);
             chartType = 'bar';
             break;
     }
