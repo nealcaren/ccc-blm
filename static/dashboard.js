@@ -264,12 +264,43 @@ function updatePhaseChart() {
             break;
             
         case 3:
-            // Phase 3: Monthly data since November 2020
+            // Phase 3: All data with color coding by period
             titleElement.textContent = 'The Story of Police Brutality Protests: Phase 3';
-            descriptionElement.textContent = 'Monthly protest counts since November 2020 to present.';
+            descriptionElement.textContent = 'Monthly protest counts across all periods, color-coded by phase.';
             
-            data = dashboardData.phase3_monthly.map(item => item.count);
-            labels = dashboardData.phase3_monthly.map(item => item.month);
+            // Combine all phase data to show the complete timeline
+            const phase1Data = dashboardData.phase1_monthly;
+            const phase2Data = dashboardData.phase2_monthly;
+            const phase3Data = dashboardData.phase3_monthly;
+            
+            // Create a combined dataset with all months
+            const allMonths = [...new Set([
+                ...phase1Data.map(item => item.month),
+                ...phase2Data.map(item => item.month),
+                ...phase3Data.map(item => item.month)
+            ])].sort();
+            
+            // Create a lookup for counts
+            const countLookup = {};
+            phase1Data.forEach(item => { countLookup[item.month] = item.count });
+            phase2Data.forEach(item => { countLookup[item.month] = item.count });
+            phase3Data.forEach(item => { countLookup[item.month] = item.count });
+            
+            labels = allMonths;
+            data = allMonths.map(month => countLookup[month] || 0);
+            
+            // Color-code by period
+            const backgroundColors = allMonths.map(month => {
+                if (month <= '2020-04') {
+                    return '#ffffbf'; // Light yellow for pre-Floyd period (Phase 1)
+                } else if (month >= '2020-05' && month <= '2020-10') {
+                    return '#fc8d59'; // Orange-red for Floyd period (Phase 2)
+                } else {
+                    return '#91bfdb'; // Blue for post-Floyd period (Phase 3)
+                }
+            });
+            
+            phaseChart.data.datasets[0].backgroundColor = backgroundColors;
             chartType = 'bar';
             break;
     }
