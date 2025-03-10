@@ -38,8 +38,8 @@ def process_data():
     phase2_monthly.columns = ['month', 'count']
     
     # Phase 3: Weekly counts since November 2020
-    phase3_data = df[df['date'] > '2020-10-31']
-    phase3_data['week'] = phase3_data['date'].dt.strftime('%Y-%W')
+    phase3_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
+    phase3_data.loc[:, 'week'] = phase3_data['date'].dt.strftime('%Y-%W')  # Use .loc for assignment
     phase3_weekly = phase3_data.groupby('week').agg(
         count=('date', 'size'),
         start_date=('date', 'min')
