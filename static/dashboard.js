@@ -315,8 +315,8 @@ function updatePhaseChart() {
                     label: 'Number of Protests',
                     data: data,
                     backgroundColor: backgroundColors,
-                    borderColor: currentPhase === 3 ? '#91bfdb' : 
-                               (currentPhase === 2 ? '#e67e4d' : '#d9d99e'),
+                    borderColor: currentPhase === 3 ? '#7570b3' : 
+                               (currentPhase === 2 ? '#d95f02' : '#1b9e77'),
                     borderWidth: 1,
                     pointRadius: chartType === 'line' ? 0 : undefined,
                     pointHitRadius: chartType === 'line' ? 10 : undefined,
