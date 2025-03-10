@@ -157,8 +157,8 @@ function initializePhaseChart() {
             datasets: [{
                 label: 'Number of Protests',
                 data: counts,
-                backgroundColor: 'rgba(52, 58, 64, 0.7)',
-                borderColor: 'rgba(52, 58, 64, 1)',
+                backgroundColor: '#ffffbf', // Light yellow for Phase 1
+                borderColor: '#d9d99e', // Darker border
                 borderWidth: 1
             }]
         },
@@ -254,9 +254,9 @@ function updatePhaseChart() {
             // Highlight the Floyd protest period
             const backgroundColors = allMonths.map(month => {
                 if (month >= '2020-05' && month <= '2020-10') {
-                    return 'rgba(220, 53, 69, 0.7)'; // Red for Floyd period
+                    return '#fc8d59'; // Orange-red for Floyd period
                 }
-                return 'rgba(52, 58, 64, 0.7)'; // Default color
+                return '#ffffbf'; // Light yellow for pre-Floyd period
             });
             
             phaseChart.data.datasets[0].backgroundColor = backgroundColors;
@@ -285,8 +285,10 @@ function updatePhaseChart() {
                 datasets: [{
                     label: 'Number of Protests',
                     data: data,
-                    backgroundColor: chartType === 'line' ? 'rgba(52, 58, 64, 0.2)' : 'rgba(52, 58, 64, 0.7)',
-                    borderColor: 'rgba(52, 58, 64, 1)',
+                    backgroundColor: currentPhase === 3 ? 'rgba(145, 191, 219, 0.2)' : 
+                                    (currentPhase === 2 ? '#fc8d59' : '#ffffbf'),
+                    borderColor: currentPhase === 3 ? '#91bfdb' : 
+                               (currentPhase === 2 ? '#e67e4d' : '#d9d99e'),
                     borderWidth: 1,
                     pointRadius: chartType === 'line' ? 0 : undefined,
                     pointHitRadius: chartType === 'line' ? 10 : undefined,
@@ -325,10 +327,13 @@ function updatePhaseChart() {
         phaseChart.data.labels = labels;
         phaseChart.data.datasets[0].data = data;
         
-        // Reset background colors if not explicitly set
-        if (currentPhase !== 2) {
-            const defaultColor = chartType === 'line' ? 'rgba(52, 58, 64, 0.2)' : 'rgba(52, 58, 64, 0.7)';
-            phaseChart.data.datasets[0].backgroundColor = defaultColor;
+        // Set appropriate colors for each phase
+        if (currentPhase === 1) {
+            phaseChart.data.datasets[0].backgroundColor = '#ffffbf'; // Light yellow for Phase 1
+            phaseChart.data.datasets[0].borderColor = '#d9d99e';
+        } else if (currentPhase === 3) {
+            phaseChart.data.datasets[0].backgroundColor = chartType === 'line' ? 'rgba(145, 191, 219, 0.2)' : '#91bfdb'; // Blue for Phase 3
+            phaseChart.data.datasets[0].borderColor = '#91bfdb';
         }
         
         phaseChart.update();
