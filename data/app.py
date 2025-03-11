@@ -49,7 +49,8 @@ def process_data():
         ((df['date'] == '2016-07-07') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
         ((df['date'] == '2016-07-13') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
         ((df['date'] == '2014-11-26') & (df['locality'] == 'Los Angeles') & (df['state'] == 'CA')) |
-        ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC'))
+        ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC')) |
+        ((df['date'] == '2012-01-28') & (df['locality'] == 'Oakland') & (df['state'] == 'CA'))
     )
     
     # Print the events being zeroed out
