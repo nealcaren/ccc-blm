@@ -226,11 +226,30 @@ def process_data():
         
         # Convert arrests to numeric first, then check for non-zero values
         df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
+        
+        # Filter out specific arrest events that should be zeroed out
+        # Create a mask for the events to zero out
+        mask_zero_out = (
+            ((df['date'] == '2015-04-01') & (df['locality'] == 'Baltimore') & (df['state'] == 'MD')) |
+            ((df['date'] == '2020-05-29') & (df['locality'] == 'Omaha') & (df['state'] == 'NE')) |
+            ((df['date'] == '2016-07-05') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
+            ((df['date'] == '2016-07-07') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
+            ((df['date'] == '2016-07-13') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
+            ((df['date'] == '2014-11-26') & (df['locality'] == 'Los Angeles') & (df['state'] == 'CA'))
+        )
+        
+        # Print the events being zeroed out
+        zeroed_events = df[mask_zero_out][['date', 'locality', 'state', 'arrests']]
+        print(f"Zeroing out these arrest events:\n{zeroed_events}")
+        
+        # Zero out the arrests for these events
+        df.loc[mask_zero_out, 'arrests'] = 0
+        
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
         
         # Print the top 10 highest arrest values for verification
         top_arrests = df.nlargest(50, 'arrests')[['date', 'locality', 'state', 'arrests']]
-        print(f"Top 50 arrest events:\n{top_arrests}")
+        print(f"Top 50 arrest events after filtering:\n{top_arrests}")
         
         total_arrests = int(df['arrests'].sum())
         print(f"Total arrests calculated: {total_arrests}")
