@@ -10,6 +10,10 @@ let currentPhaseDataType = 'count';
 let useLogScale = false;
 let filteredTableData = [];
 let searchTerm = '';
+let phaseTotals = {
+    protests: {},
+    protesters: {}
+};
 
 // Fetch and load the data
 async function loadData() {
@@ -44,6 +48,9 @@ async function loadData() {
         console.log('Phase 4 sample:', dashboardData.phase4_monthly[0]);
         console.log('Phase 5 sample:', dashboardData.phase5_monthly[0]);
         
+        // Calculate phase totals before initializing the dashboard
+        calculatePhaseTotals();
+        
         // Initialize the dashboard
         updateSummaryStats();
         initializePhaseChart();
@@ -58,12 +65,46 @@ async function loadData() {
     }
 }
 
-// Update summary statistics
-function updateSummaryStats() {
-    document.getElementById('total-protests').textContent = dashboardData.total_protests.toLocaleString();
-    document.getElementById('total-protesters').textContent = dashboardData.total_protesters.toLocaleString();
+// Calculate phase totals
+function calculatePhaseTotals() {
+    // Initialize phase totals
+    const phases = ['phase1_monthly', 'phase2_monthly', 'phase3_monthly', 'phase4_monthly', 'phase5_monthly'];
     
-    // Get the top state
+    // Calculate cumulative totals for each phase
+    let cumulativeProtests = 0;
+    let cumulativeProtesters = 0;
+    
+    phases.forEach((phase, index) => {
+        const phaseData = dashboardData[phase];
+        let phaseProtests = 0;
+        let phaseProtesters = 0;
+        
+        phaseData.forEach(item => {
+            phaseProtests += item.count || 0;
+            phaseProtesters += item.size || 0;
+        });
+        
+        cumulativeProtests += phaseProtests;
+        cumulativeProtesters += phaseProtesters;
+        
+        // Store cumulative totals for each phase
+        phaseTotals.protests[index + 1] = cumulativeProtests;
+        phaseTotals.protesters[index + 1] = cumulativeProtesters;
+    });
+    
+    console.log('Phase totals calculated:', phaseTotals);
+}
+
+// Update summary statistics based on current phase
+function updateSummaryStats() {
+    // Use the totals for the current phase
+    const protestTotal = phaseTotals.protests[currentPhase] || 0;
+    const protesterTotal = phaseTotals.protesters[currentPhase] || 0;
+    
+    document.getElementById('total-protests').textContent = protestTotal.toLocaleString();
+    document.getElementById('total-protesters').textContent = protesterTotal.toLocaleString();
+    
+    // Get the top state - this doesn't change with phases for now
     const topState = Object.entries(dashboardData.top_states)[0];
     document.getElementById('top-state').textContent = `${topState[0]} (${topState[1]})`;
 }
@@ -222,6 +263,7 @@ function initializePhaseChart() {
         if (currentPhase < 5) {
             currentPhase++;
             updatePhaseChart();
+            updateSummaryStats(); // Update summary stats when phase changes
         }
     });
     
@@ -229,6 +271,7 @@ function initializePhaseChart() {
         if (currentPhase > 1) {
             currentPhase--;
             updatePhaseChart();
+            updateSummaryStats(); // Update summary stats when phase changes
         }
     });
     
