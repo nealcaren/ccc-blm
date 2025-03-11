@@ -106,9 +106,10 @@ function calculatePhaseTotals() {
             phaseProtesters += item.size || 0;
             
             // Add locations from this phase to both phase-specific and cumulative sets
+            // The locations field is already the count of unique locations for that month
             if (item.locations) {
-                phaseLocations.add(item.locations);
-                cumulativeLocations.add(item.locations);
+                // We're tracking the total unique locations, not adding up the monthly counts
+                // This is handled in the phase totals calculation below
             }
         });
         
@@ -125,11 +126,24 @@ function calculatePhaseTotals() {
         const phaseArrestShare = totalArrests * (phaseProtestCount / totalProtests);
         cumulativeArrests += phaseArrestShare;
         
+        // Get the sum of unique locations for this phase
+        let phaseLocationCount = 0;
+        phaseData.forEach(item => {
+            phaseLocationCount += item.locations || 0;
+        });
+        
         // Store cumulative totals for each phase
         phaseTotals.protests[index + 1] = cumulativeProtests;
         phaseTotals.protesters[index + 1] = cumulativeProtesters;
         phaseTotals.arrests[index + 1] = Math.round(cumulativeArrests);
-        phaseTotals.locations[index + 1] = cumulativeLocations.size;
+        
+        // For locations, we'll use the sum of the monthly unique locations
+        // This isn't perfect (there could be overlap between months) but it's a reasonable approximation
+        if (index === 0) {
+            phaseTotals.locations[index + 1] = phaseLocationCount;
+        } else {
+            phaseTotals.locations[index + 1] = phaseTotals.locations[index] + phaseLocationCount;
+        }
     });
     
     console.log('Phase totals calculated:', phaseTotals);

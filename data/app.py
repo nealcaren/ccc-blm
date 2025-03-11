@@ -45,7 +45,7 @@ def process_data():
         count=('date', 'size'),
         start_date=('date', 'min'),
         protester_count=('size_mean_imputed', 'sum'),
-        locations=('location', lambda x: len(set(x)))  # Count unique locations
+        locations=('location', lambda x: len(set(x.dropna())))  # Count unique locations, dropping NaN values
     ).reset_index()
     weekly_counts['start_date'] = weekly_counts['start_date'].dt.strftime('%Y-%m-%d')
     
@@ -68,7 +68,7 @@ def process_data():
         phase1_monthly = phase1_data.groupby('month').agg(
             count=('date', 'size'),
             size=('size_mean_imputed', 'sum'),
-            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            locations=('location', lambda x: len(set(x.dropna()))),  # Count unique locations, dropping NaN values
             arrests=('arrests', 'sum')  # Sum arrests by month
         ).reset_index()
     else:
@@ -96,7 +96,7 @@ def process_data():
         phase2_monthly = phase2_data.groupby('month').agg(
             count=('date', 'size'),
             size=('size_mean_imputed', 'sum'),
-            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            locations=('location', lambda x: len(set(x.dropna()))),  # Count unique locations, dropping NaN values
             arrests=('arrests', 'sum')  # Sum arrests by month
         ).reset_index()
     else:
@@ -124,7 +124,7 @@ def process_data():
         phase3_monthly = phase3_data.groupby('month').agg(
             count=('date', 'size'),
             size=('size_mean_imputed', 'sum'),
-            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            locations=('location', lambda x: len(set(x.dropna()))),  # Count unique locations, dropping NaN values
             arrests=('arrests', 'sum')  # Sum arrests by month
         ).reset_index()
     else:
@@ -152,7 +152,7 @@ def process_data():
         phase4_monthly = phase4_data.groupby('month').agg(
             count=('date', 'size'),
             size=('size_mean_imputed', 'sum'),
-            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            locations=('location', lambda x: len(set(x.dropna()))),  # Count unique locations, dropping NaN values
             arrests=('arrests', 'sum')  # Sum arrests by month
         ).reset_index()
     else:
@@ -180,7 +180,7 @@ def process_data():
         phase5_monthly = phase5_data.groupby('month').agg(
             count=('date', 'size'),
             size=('size_mean_imputed', 'sum'),
-            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            locations=('location', lambda x: len(set(x.dropna()))),  # Count unique locations, dropping NaN values
             arrests=('arrests', 'sum')  # Sum arrests by month
         ).reset_index()
     else:
@@ -227,6 +227,10 @@ def process_data():
         # Convert arrests to numeric first, then check for non-zero values
         df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
+        
+        # Print the top 10 highest arrest values for verification
+        top_arrests = df.nlargest(10, 'arrests')[['date', 'locality', 'state', 'arrests']]
+        print(f"Top 10 arrest events:\n{top_arrests}")
         
         total_arrests = int(df['arrests'].sum())
         print(f"Total arrests calculated: {total_arrests}")
