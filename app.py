@@ -46,23 +46,23 @@ def process_data():
     # Create data for phased visualization
     df['month'] = df['date'].dt.strftime('%Y-%m')
     
-    # Phase 1: Monthly counts up to April 2020
-    phase1_data = df[df['date'] <= '2020-04-30']
-    phase1_monthly = phase1_data.groupby('month').agg(
+    # Phase 4: Monthly counts up to April 2020
+    phase4_data = df[df['date'] <= '2020-04-30']
+    phase4_monthly = phase4_data.groupby('month').agg(
         count=('date', 'size'),
         size=('size_mean_imputed', 'sum')
     ).reset_index()
     
-    # Phase 2: Monthly counts May-October 2020 (Floyd protests)
-    phase2_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')]
-    phase2_monthly = phase2_data.groupby('month').agg(
+    # Phase 5: Monthly counts May-October 2020 (Floyd protests)
+    phase5_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')]
+    phase5_monthly = phase5_data.groupby('month').agg(
         count=('date', 'size'),
         size=('size_mean_imputed', 'sum')
     ).reset_index()
     
-    # Phase 3: Monthly counts since November 2020
-    phase3_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
-    phase3_monthly = phase3_data.groupby('month').agg(
+    # Phase 6: Monthly counts since November 2020
+    phase6_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
+    phase6_monthly = phase6_data.groupby('month').agg(
         count=('date', 'size'),
         size=('size_mean_imputed', 'sum')
     ).reset_index()
@@ -98,6 +98,24 @@ def process_data():
         'phase1_monthly': phase1_monthly.to_dict('records'),
         'phase2_monthly': phase2_monthly.to_dict('records'),
         'phase3_monthly': phase3_monthly.to_dict('records'),
+        'table_data': table_records,
+        'total_protests': len(df),
+        'total_protesters': total_protesters,
+        'date_range': {
+            'start': df['date'].min().strftime('%Y-%m-%d'),
+            'end': df['date'].max().strftime('%Y-%m-%d')
+        },
+        'top_states': df['state'].value_counts().head(5).to_dict(),
+        'top_localities': df['locality'].value_counts().head(5).to_dict()
+    }
+    
+    # Create the output data structure
+    output_data = {
+        'weekly_counts': weekly_counts.to_dict('records'),
+        'daily_protester_counts': daily_protester_counts.to_dict('records'),
+        'phase4_monthly': phase4_monthly.to_dict('records'),
+        'phase5_monthly': phase5_monthly.to_dict('records'),
+        'phase6_monthly': phase6_monthly.to_dict('records'),
         'table_data': table_records,
         'total_protests': len(df),
         'total_protesters': total_protesters,

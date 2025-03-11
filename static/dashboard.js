@@ -4,7 +4,7 @@ let currentPage = 1;
 let pageSize = 10;
 let weeklyChart = null;
 let phaseChart = null;
-let currentPhase = 1;
+let currentPhase = 4;
 let currentDataType = 'count';
 let currentPhaseDataType = 'count';
 let useLogScale = false;
@@ -21,9 +21,9 @@ async function loadData() {
         
         // Log data structure for debugging
         console.log('Data loaded:', dashboardData);
-        console.log('Phase 1 sample:', dashboardData.phase1_monthly[0]);
-        console.log('Phase 2 sample:', dashboardData.phase2_monthly[0]);
-        console.log('Phase 3 sample:', dashboardData.phase3_monthly[0]);
+        console.log('Phase 4 sample:', dashboardData.phase4_monthly[0]);
+        console.log('Phase 5 sample:', dashboardData.phase5_monthly[0]);
+        console.log('Phase 6 sample:', dashboardData.phase6_monthly[0]);
         
         // Initialize the dashboard
         updateSummaryStats();
@@ -151,9 +151,9 @@ function updateWeeklyChart() {
 function initializePhaseChart() {
     const ctx = document.getElementById('phase-chart').getContext('2d');
     
-    // Initial data for Phase 1
-    const months = dashboardData.phase1_monthly.map(item => item.month);
-    const counts = dashboardData.phase1_monthly.map(item => item.count);
+    // Initial data for Phase 4
+    const months = dashboardData.phase4_monthly.map(item => item.month);
+    const counts = dashboardData.phase4_monthly.map(item => item.count);
     
     // Create the chart
     phaseChart = new Chart(ctx, {
@@ -197,14 +197,14 @@ function initializePhaseChart() {
     
     // Add event listeners for phase navigation and data type
     document.getElementById('next-phase').addEventListener('click', () => {
-        if (currentPhase < 3) {
+        if (currentPhase < 6) {
             currentPhase++;
             updatePhaseChart();
         }
     });
     
     document.getElementById('prev-phase').addEventListener('click', () => {
-        if (currentPhase > 1) {
+        if (currentPhase > 4) {
             currentPhase--;
             updatePhaseChart();
         }
@@ -226,8 +226,8 @@ function initializePhaseChart() {
 // Update the phase chart based on current phase
 function updatePhaseChart() {
     // Update navigation buttons
-    document.getElementById('prev-phase').disabled = (currentPhase === 1);
-    document.getElementById('next-phase').disabled = (currentPhase === 3);
+    document.getElementById('prev-phase').disabled = (currentPhase === 4);
+    document.getElementById('next-phase').disabled = (currentPhase === 6);
     
     // Update title and description
     const titleElement = document.getElementById('phase-title');
@@ -241,32 +241,32 @@ function updatePhaseChart() {
     console.log('Using data field:', dataField);
     
     // Prepare data based on current phase
-    if (currentPhase === 1) {
-        // Phase 1: Pre-Floyd monthly data
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 1';
+    if (currentPhase === 4) {
+        // Phase 4: Pre-Floyd monthly data
+        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 4';
         const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
         descriptionElement.textContent = `Monthly ${countType} before George Floyd's death (up to April 2020).`;
         
         // Use the data field directly from our processed data
-        data = dashboardData.phase1_monthly.map(item => item[dataField] || 0);
-        labels = dashboardData.phase1_monthly.map(item => item.month);
+        data = dashboardData.phase4_monthly.map(item => item[dataField] || 0);
+        labels = dashboardData.phase4_monthly.map(item => item.month);
         chartType = 'bar';
-        backgroundColors = '#1b9e77'; // Green for Phase 1
+        backgroundColors = '#1b9e77'; // Green for Phase 4
         
-    } else if (currentPhase === 2) {
-        // Phase 2: Floyd protest surge (May-Oct 2020)
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 2';
+    } else if (currentPhase === 5) {
+        // Phase 5: Floyd protest surge (May-Oct 2020)
+        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 5';
         const countType = currentPhaseDataType === 'count' ? 'protests' : 'protesters';
         descriptionElement.textContent = `The surge in ${countType} following George Floyd's death (May-October 2020).`;
         
-        // Combine phase 1 and 2 data to show the dramatic increase
-        const phase1Data = dashboardData.phase1_monthly;
-        const phase2Data = dashboardData.phase2_monthly;
+        // Combine phase 4 and 5 data to show the dramatic increase
+        const phase4Data = dashboardData.phase4_monthly;
+        const phase5Data = dashboardData.phase5_monthly;
         
         // Create a combined dataset with all months
         const allMonths = [...new Set([
-            ...phase1Data.map(item => item.month),
-            ...phase2Data.map(item => item.month)
+            ...phase4Data.map(item => item.month),
+            ...phase5Data.map(item => item.month)
         ])].sort();
         
         // Create a lookup for counts
@@ -277,8 +277,8 @@ function updatePhaseChart() {
             countLookup[item.month] = item[dataField] || 0;
         };
         
-        phase1Data.forEach(setCountValue);
-        phase2Data.forEach(setCountValue);
+        phase4Data.forEach(setCountValue);
+        phase5Data.forEach(setCountValue);
         
         labels = allMonths;
         data = allMonths.map(month => countLookup[month] || 0);
@@ -293,24 +293,24 @@ function updatePhaseChart() {
         
         chartType = 'bar';
         
-    } else if (currentPhase === 3) {
-        // Phase 3: All data with color coding by period
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 3';
+    } else if (currentPhase === 6) {
+        // Phase 6: All data with color coding by period
+        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 6';
         const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
         descriptionElement.textContent = `Monthly ${countType} across all periods, color-coded by phase.`;
         
         // Combine all phase data to show the complete timeline
         const phaseData = {
-            phase1: dashboardData.phase1_monthly,
-            phase2: dashboardData.phase2_monthly,
-            phase3: dashboardData.phase3_monthly
+            phase4: dashboardData.phase4_monthly,
+            phase5: dashboardData.phase5_monthly,
+            phase6: dashboardData.phase6_monthly
         };
         
         // Create a combined dataset with all months
         const allMonths = [...new Set([
-            ...phaseData.phase1.map(item => item.month),
-            ...phaseData.phase2.map(item => item.month),
-            ...phaseData.phase3.map(item => item.month)
+            ...phaseData.phase4.map(item => item.month),
+            ...phaseData.phase5.map(item => item.month),
+            ...phaseData.phase6.map(item => item.month)
         ])].sort();
         
         // Create a lookup for counts
@@ -321,9 +321,9 @@ function updatePhaseChart() {
             countLookup[item.month] = item[dataField] || 0;
         };
         
-        phaseData.phase1.forEach(setCountLookup);
-        phaseData.phase2.forEach(setCountLookup);
-        phaseData.phase3.forEach(setCountLookup);
+        phaseData.phase4.forEach(setCountLookup);
+        phaseData.phase5.forEach(setCountLookup);
+        phaseData.phase6.forEach(setCountLookup);
         
         labels = allMonths;
         data = allMonths.map(month => countLookup[month] || 0);
