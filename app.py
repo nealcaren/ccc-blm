@@ -46,9 +46,23 @@ def process_data():
     # Create data for phased visualization
     df['month'] = df['date'].dt.strftime('%Y-%m')
     
-    # Phase 4: Monthly counts up to April 2020
-    phase4_data = df[df['date'] <= '2020-04-30']
-    phase4_monthly = phase4_data.groupby('month').agg(
+    # Phase 1: Beginning until July 2014
+    phase1_data = df[df['date'] <= '2014-07-31']
+    phase1_monthly = phase1_data.groupby('month').agg(
+        count=('date', 'size'),
+        size=('size_mean_imputed', 'sum')
+    ).reset_index()
+    
+    # Phase 2: August 2014 until December 2016
+    phase2_data = df[(df['date'] > '2014-07-31') & (df['date'] <= '2016-12-31')]
+    phase2_monthly = phase2_data.groupby('month').agg(
+        count=('date', 'size'),
+        size=('size_mean_imputed', 'sum')
+    ).reset_index()
+    
+    # Phase 3: January 2017 until April 2020
+    phase3_data = df[(df['date'] > '2016-12-31') & (df['date'] <= '2020-04-30')]
+    phase3_monthly = phase3_data.groupby('month').agg(
         count=('date', 'size'),
         size=('size_mean_imputed', 'sum')
     ).reset_index()
@@ -95,7 +109,9 @@ def process_data():
     output_data = {
         'weekly_counts': weekly_counts.to_dict('records'),
         'daily_protester_counts': daily_protester_counts.to_dict('records'),
-        'phase4_monthly': phase4_monthly.to_dict('records'),
+        'phase1_monthly': phase1_monthly.to_dict('records'),
+        'phase2_monthly': phase2_monthly.to_dict('records'),
+        'phase3_monthly': phase3_monthly.to_dict('records'),
         'phase5_monthly': phase5_monthly.to_dict('records'),
         'phase6_monthly': phase6_monthly.to_dict('records'),
         'table_data': table_records,
