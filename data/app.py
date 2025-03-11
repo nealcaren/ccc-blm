@@ -251,6 +251,11 @@ def process_data():
         top_arrests = df.nlargest(50, 'arrests')[['date', 'locality', 'state', 'arrests']]
         print(f"Top 50 arrest events after filtering:\n{top_arrests}")
         
+        # Calculate annual arrest totals
+        df['year'] = df['date'].dt.year
+        annual_arrests = df.groupby('year')['arrests'].sum().to_dict()
+        print(f"Annual arrests: {annual_arrests}")
+        
         total_arrests = int(df['arrests'].sum())
         print(f"Total arrests calculated: {total_arrests}")
     else:

@@ -4,12 +4,16 @@ let currentPage = 1;
 let pageSize = 10;
 let weeklyChart = null;
 let phaseChart = null;
+let annualChart = null;
 let currentPhase = 1;
 let currentDataType = 'count';
 let currentPhaseDataType = 'count';
 let useLogScale = false;
 let filteredTableData = [];
 let searchTerm = '';
+let locationSearchTerm = '';
+let annualData = {};
+let locationFilteredData = [];
 let phaseTotals = {
     protests: {},
     protesters: {},
@@ -55,9 +59,13 @@ async function loadData() {
         // Calculate phase totals before initializing the dashboard
         calculatePhaseTotals();
         
+        // Process annual data
+        processAnnualData();
+        
         // Initialize the dashboard
         updateSummaryStats();
         initializePhaseChart();
+        initializeAnnualChart();
         initializeWeeklyChart();
         updateTable();
         
@@ -814,6 +822,298 @@ function setupSearchFunctionality() {
         currentPage = 1; // Reset to first page
         updateTable();
     });
+}
+
+// Process annual data from the raw data
+function processAnnualData() {
+    // Create a structure to hold annual totals
+    annualData = {
+        years: [],
+        protests: {},
+        protesters: {},
+        arrests: {},
+        locations: {}
+    };
+    
+    // Extract years from the data
+    const years = new Set();
+    dashboardData.table_data.forEach(protest => {
+        if (protest.date) {
+            const year = protest.date.substring(0, 4);
+            years.add(year);
+        }
+    });
+    
+    // Sort years
+    annualData.years = Array.from(years).sort();
+    
+    // Initialize counters for each year
+    annualData.years.forEach(year => {
+        annualData.protests[year] = 0;
+        annualData.protesters[year] = 0;
+        annualData.arrests[year] = 0;
+        annualData.locations[year] = new Set();
+    });
+    
+    // Process weekly data to get annual totals
+    dashboardData.weekly_counts.forEach(week => {
+        if (week.start_date) {
+            const year = week.start_date.substring(0, 4);
+            if (annualData.years.includes(year)) {
+                annualData.protests[year] += week.count || 0;
+                annualData.protesters[year] += week.protester_count || 0;
+                // Locations are handled separately
+            }
+        }
+    });
+    
+    // Process location data
+    dashboardData.table_data.forEach(protest => {
+        if (protest.date) {
+            const year = protest.date.substring(0, 4);
+            if (annualData.years.includes(year)) {
+                // Add location to the set for this year
+                if (protest.locality && protest.state) {
+                    const location = `${protest.locality}, ${protest.state}`;
+                    annualData.locations[year].add(location);
+                }
+            }
+        }
+    });
+    
+    // Process arrests data - we need to go through the phase data
+    const allPhaseData = [
+        ...dashboardData.phase1_monthly,
+        ...dashboardData.phase2_monthly,
+        ...dashboardData.phase3_monthly,
+        ...dashboardData.phase4_monthly,
+        ...dashboardData.phase5_monthly
+    ];
+    
+    allPhaseData.forEach(month => {
+        if (month.month) {
+            const year = month.month.substring(0, 4);
+            if (annualData.years.includes(year)) {
+                annualData.arrests[year] += month.arrests || 0;
+            }
+        }
+    });
+    
+    // Convert location sets to counts
+    annualData.years.forEach(year => {
+        annualData.locations[year] = annualData.locations[year].size;
+    });
+    
+    console.log('Processed annual data:', annualData);
+}
+
+// Initialize the annual totals chart
+function initializeAnnualChart() {
+    const ctx = document.getElementById('annual-chart').getContext('2d');
+    
+    // Prepare data for the chart
+    const labels = annualData.years;
+    const datasets = [
+        {
+            label: 'Protests',
+            data: labels.map(year => annualData.protests[year]),
+            backgroundColor: '#1b9e77',
+            borderColor: '#1b9e77',
+            borderWidth: 1
+        },
+        {
+            label: 'Protesters (÷100)',
+            data: labels.map(year => Math.round(annualData.protesters[year] / 100)),
+            backgroundColor: '#d95f02',
+            borderColor: '#d95f02',
+            borderWidth: 1
+        },
+        {
+            label: 'Arrests',
+            data: labels.map(year => annualData.arrests[year]),
+            backgroundColor: '#7570b3',
+            borderColor: '#7570b3',
+            borderWidth: 1
+        },
+        {
+            label: 'Locations',
+            data: labels.map(year => annualData.locations[year]),
+            backgroundColor: '#e7298a',
+            borderColor: '#e7298a',
+            borderWidth: 1
+        }
+    ];
+    
+    // Create the chart
+    annualChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    stacked: false
+                },
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                },
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+    
+    // Set up location search functionality
+    setupLocationSearch();
+}
+
+// Set up location search functionality
+function setupLocationSearch() {
+    const searchInput = document.getElementById('location-search');
+    const searchButton = document.getElementById('location-search-button');
+    const clearButton = document.getElementById('location-clear-button');
+    const resultsContainer = document.getElementById('location-results-container');
+    const resultsTitle = document.getElementById('location-results-title');
+    
+    // Search when button is clicked
+    searchButton.addEventListener('click', () => {
+        locationSearchTerm = searchInput.value.trim();
+        if (locationSearchTerm) {
+            filterDataByLocation(locationSearchTerm);
+        }
+    });
+    
+    // Search when Enter key is pressed
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            locationSearchTerm = searchInput.value.trim();
+            if (locationSearchTerm) {
+                filterDataByLocation(locationSearchTerm);
+            }
+        }
+    });
+    
+    // Clear search
+    clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        locationSearchTerm = '';
+        resultsContainer.style.display = 'none';
+        updateAnnualChartForAllLocations();
+    });
+}
+
+// Filter data by location and update the annual chart
+function filterDataByLocation(location) {
+    const locationLower = location.toLowerCase();
+    
+    // Filter table data for this location
+    locationFilteredData = dashboardData.table_data.filter(protest => {
+        if (protest.locality && protest.state) {
+            const fullLocation = `${protest.locality}, ${protest.state}`.toLowerCase();
+            return fullLocation.includes(locationLower);
+        }
+        return false;
+    });
+    
+    // If we found matching data, update the chart and show the results
+    if (locationFilteredData.length > 0) {
+        updateAnnualChartForLocation(locationLower);
+        updateLocationResultsTable();
+        document.getElementById('location-results-container').style.display = 'block';
+        document.getElementById('location-results-title').textContent = `Results for "${location}" (${locationFilteredData.length} protests)`;
+    } else {
+        alert(`No protests found for location: ${location}`);
+    }
+}
+
+// Update the annual chart for a specific location
+function updateAnnualChartForLocation(location) {
+    // Create a structure to hold annual totals for this location
+    const locationAnnualData = {
+        protests: {},
+        protesters: {},
+        arrests: {},
+        locations: {}
+    };
+    
+    // Initialize counters for each year
+    annualData.years.forEach(year => {
+        locationAnnualData.protests[year] = 0;
+        locationAnnualData.protesters[year] = 0;
+        locationAnnualData.arrests[year] = 0;
+        locationAnnualData.locations[year] = 0;
+    });
+    
+    // Process the filtered data
+    locationFilteredData.forEach(protest => {
+        if (protest.date) {
+            const year = protest.date.substring(0, 4);
+            if (annualData.years.includes(year)) {
+                locationAnnualData.protests[year]++;
+                locationAnnualData.protesters[year] += protest.size_mean || 0;
+                // For location-specific data, we count each location as 1
+                locationAnnualData.locations[year] = 1;
+            }
+        }
+    });
+    
+    // Update the chart with the new data
+    annualChart.data.datasets[0].data = annualData.years.map(year => locationAnnualData.protests[year]);
+    annualChart.data.datasets[1].data = annualData.years.map(year => Math.round(locationAnnualData.protesters[year] / 100));
+    annualChart.data.datasets[2].data = annualData.years.map(year => 0); // We don't have arrest data by location
+    annualChart.data.datasets[3].data = annualData.years.map(year => locationAnnualData.locations[year]);
+    
+    annualChart.update();
+}
+
+// Update the annual chart to show all locations (reset)
+function updateAnnualChartForAllLocations() {
+    annualChart.data.datasets[0].data = annualData.years.map(year => annualData.protests[year]);
+    annualChart.data.datasets[1].data = annualData.years.map(year => Math.round(annualData.protesters[year] / 100));
+    annualChart.data.datasets[2].data = annualData.years.map(year => annualData.arrests[year]);
+    annualChart.data.datasets[3].data = annualData.years.map(year => annualData.locations[year]);
+    
+    annualChart.update();
+}
+
+// Update the location results table
+function updateLocationResultsTable() {
+    const tableBody = document.getElementById('location-table-body');
+    tableBody.innerHTML = '';
+    
+    if (locationFilteredData.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="6" class="text-center">No matching protests found</td>';
+        tableBody.appendChild(row);
+    } else {
+        // Add data rows
+        locationFilteredData.forEach(protest => {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${protest.date}</td>
+                <td>${protest.locality}</td>
+                <td>${protest.state}</td>
+                <td>${protest.type}</td>
+                <td>${protest.claims}</td>
+                <td>${protest.size_mean === 11 ? '' : protest.size_mean}</td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+    }
 }
 
 // Initialize the dashboard when the page loads
