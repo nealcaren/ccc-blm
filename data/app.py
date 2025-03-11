@@ -43,10 +43,11 @@ def process_data():
     
     # Drop invalid events that should be completely excluded
     mask_drop = (
-        ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC')) |
         ((df['date'] == '2012-03-17') & (df['locality'] == 'New York') & (df['state'] == 'NY')) |
         ((df['date'] == '2012-03-21') & (df['locality'] == 'New York') & (df['state'] == 'NY')) |
-        ((df['date'] == '2012-03-24') & (df['locality'] == 'New York') & (df['state'] == 'NY'))
+        ((df['date'] == '2012-03-24') & (df['locality'] == 'New York') & (df['state'] == 'NY')) |
+        ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC')) |
+        ((df['date'] == '2012-03-17') & (df['locality'] == 'New York') & (df['state'] == 'NY'))
     )
     
     # Print the events being dropped
