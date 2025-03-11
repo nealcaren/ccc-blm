@@ -43,6 +43,7 @@ async function loadData() {
         
         // Log data structure for debugging
         console.log('Data loaded:', dashboardData);
+        console.log('Total arrests from data:', dashboardData.total_arrests);
         console.log('Phase 1 sample:', dashboardData.phase1_monthly[0]);
         console.log('Phase 2 sample:', dashboardData.phase2_monthly[0]);
         console.log('Phase 3 sample:', dashboardData.phase3_monthly[0]);
