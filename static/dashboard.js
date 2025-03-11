@@ -2,14 +2,11 @@
 let dashboardData = null;
 let currentPage = 1;
 let pageSize = 10;
-let weeklyChart = null;
 let phaseChart = null;
 let annualChart = null;
 let currentPhase = 1;
-let currentDataType = 'count';
 let currentPhaseDataType = 'count';
 let currentAnnualDataType = 'protests';
-let useLogScale = false;
 let filteredTableData = [];
 let searchTerm = '';
 let locationSearchTerm = '';
@@ -66,7 +63,6 @@ async function loadData() {
         updateSummaryStats();
         initializePhaseChart();
         initializeAnnualChart();
-        initializeWeeklyChart();
         updateTable();
         
     } catch (error) {
@@ -160,102 +156,6 @@ function updateSummaryStats() {
 }
 
 
-// Initialize the weekly protest chart
-function initializeWeeklyChart() {
-    const ctx = document.getElementById('weekly-chart').getContext('2d');
-    
-    // Prepare data for the chart
-    const dates = dashboardData.weekly_counts.map(item => item.start_date);
-    const counts = dashboardData.weekly_counts.map(item => item.count);
-    const protesterCounts = dashboardData.weekly_counts.map(item => item.protester_count);
-    
-    // Create the chart
-    weeklyChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'Number of Protests',
-                data: counts,
-                backgroundColor: 'rgba(52, 58, 64, 0.2)',
-                borderColor: 'rgba(52, 58, 64, 1)',
-                borderWidth: 1,
-                pointRadius: 0,
-                pointHitRadius: 10,
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    ticks: {
-                        maxTicksLimit: 20,
-                        maxRotation: 0
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    type: 'linear'
-                }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                },
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
-    
-    // Add event listeners for chart controls
-    document.querySelectorAll('input[name="dataType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            currentDataType = this.value;
-            updateWeeklyChart();
-        });
-    });
-    
-    document.getElementById('logScale').addEventListener('change', function() {
-        useLogScale = this.checked;
-        updateWeeklyChart();
-    });
-}
-
-// Update the weekly chart based on selected options
-function updateWeeklyChart() {
-    const dates = dashboardData.weekly_counts.map(item => item.start_date);
-    
-    // Get the appropriate data based on selection
-    let data, label;
-    if (currentDataType === 'count') {
-        data = dashboardData.weekly_counts.map(item => item.count);
-        label = 'Number of Protests';
-    } else if (currentDataType === 'protesters') {
-        data = dashboardData.weekly_counts.map(item => item.protester_count);
-        label = 'Number of Protesters';
-    }
-    
-    // Update chart data
-    weeklyChart.data.datasets[0].data = data;
-    weeklyChart.data.datasets[0].label = label;
-    
-    // Update scale type
-    weeklyChart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
-    
-    // If using log scale, ensure we don't have zero values
-    if (useLogScale) {
-        weeklyChart.options.scales.y.min = Math.max(1, Math.min(...data.filter(val => val > 0)));
-    } else {
-        weeklyChart.options.scales.y.min = 0;
-    }
-    
-    weeklyChart.update();
-}
 
 // Initialize the phased visualization chart
 function initializePhaseChart() {
