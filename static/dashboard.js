@@ -609,6 +609,7 @@ function updatePhaseChart() {
         phaseChart.data.labels = labels;
         phaseChart.data.datasets[0].data = data;
         phaseChart.data.datasets[0].backgroundColor = backgroundColors;
+        phaseChart.data.datasets[0].borderColor = backgroundColors; // Update border color to match background
         phaseChart.data.datasets[0].label = dataLabel;
         
         phaseChart.update();
