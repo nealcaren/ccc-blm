@@ -134,6 +134,9 @@ def process_data():
     df['size_mean_imputed'] = df['size_mean'].fillna(11)
     total_protesters = int(df['size_mean_imputed'].sum())
     
+    # Calculate total arrests
+    total_arrests = int(df['arrests'].fillna(0).sum())
+    
     # Calculate daily protester counts
     daily_protester_counts = df.groupby('date').agg(
         count=('date', 'size'),
@@ -155,6 +158,7 @@ def process_data():
         'table_data': table_records,
         'total_protests': len(df),
         'total_protesters': total_protesters,
+        'total_arrests': total_arrests,
         'date_range': {
             'start': df['date'].min().strftime('%Y-%m-%d'),
             'end': df['date'].max().strftime('%Y-%m-%d')

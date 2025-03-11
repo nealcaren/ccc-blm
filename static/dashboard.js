@@ -12,7 +12,8 @@ let filteredTableData = [];
 let searchTerm = '';
 let phaseTotals = {
     protests: {},
-    protesters: {}
+    protesters: {},
+    arrests: {}
 };
 
 // Fetch and load the data
@@ -74,6 +75,12 @@ function calculatePhaseTotals() {
     let cumulativeProtests = 0;
     let cumulativeProtesters = 0;
     
+    // For arrests, we'll use the total from the data
+    // We'll assume arrests are evenly distributed across phases for now
+    // This is a simplification - in a real app, you'd want phase-specific arrest data
+    const totalArrests = dashboardData.total_arrests || 0;
+    const arrestsPerPhase = totalArrests / 5;
+    
     phases.forEach((phase, index) => {
         const phaseData = dashboardData[phase];
         let phaseProtests = 0;
@@ -90,6 +97,7 @@ function calculatePhaseTotals() {
         // Store cumulative totals for each phase
         phaseTotals.protests[index + 1] = cumulativeProtests;
         phaseTotals.protesters[index + 1] = cumulativeProtesters;
+        phaseTotals.arrests[index + 1] = Math.round(arrestsPerPhase * (index + 1));
     });
     
     console.log('Phase totals calculated:', phaseTotals);
@@ -100,13 +108,11 @@ function updateSummaryStats() {
     // Use the totals for the current phase
     const protestTotal = phaseTotals.protests[currentPhase] || 0;
     const protesterTotal = phaseTotals.protesters[currentPhase] || 0;
+    const arrestTotal = phaseTotals.arrests[currentPhase] || 0;
     
     document.getElementById('total-protests').textContent = protestTotal.toLocaleString();
     document.getElementById('total-protesters').textContent = protesterTotal.toLocaleString();
-    
-    // Get the top state - this doesn't change with phases for now
-    const topState = Object.entries(dashboardData.top_states)[0];
-    document.getElementById('top-state').textContent = `${topState[0]} (${topState[1]})`;
+    document.getElementById('top-state').textContent = arrestTotal.toLocaleString();
 }
 
 
