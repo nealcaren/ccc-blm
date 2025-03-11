@@ -77,12 +77,21 @@ function calculatePhaseTotals() {
     let cumulativeProtests = 0;
     let cumulativeProtesters = 0;
     
-    // For arrests, we'll use the total from the data
-    // We'll assume arrests are evenly distributed across phases for now
-    // This is a simplification - in a real app, you'd want phase-specific arrest data
+    // For arrests, distribute them proportionally to protest counts
+    // This gives a more realistic distribution than even distribution
     const totalArrests = dashboardData.total_arrests || 0;
     console.log('Total arrests from data:', totalArrests);
-    const arrestsPerPhase = totalArrests / 5;
+    
+    // Calculate the total number of protests across all phases to determine proportions
+    let totalProtests = 0;
+    phases.forEach(phase => {
+        dashboardData[phase].forEach(item => {
+            totalProtests += item.count || 0;
+        });
+    });
+    
+    // Track cumulative arrests for phase totals
+    let cumulativeArrests = 0;
     
     phases.forEach((phase, index) => {
         const phaseData = dashboardData[phase];
@@ -97,14 +106,23 @@ function calculatePhaseTotals() {
         cumulativeProtests += phaseProtests;
         cumulativeProtesters += phaseProtesters;
         
+        // Calculate phase-specific arrests based on proportion of protests
+        let phaseProtestCount = 0;
+        phaseData.forEach(item => {
+            phaseProtestCount += item.count || 0;
+        });
+        
+        // Calculate this phase's share of arrests based on its proportion of total protests
+        const phaseArrestShare = totalArrests * (phaseProtestCount / totalProtests);
+        cumulativeArrests += phaseArrestShare;
+        
         // Store cumulative totals for each phase
         phaseTotals.protests[index + 1] = cumulativeProtests;
         phaseTotals.protesters[index + 1] = cumulativeProtesters;
-        phaseTotals.arrests[index + 1] = Math.round(arrestsPerPhase * (index + 1));
+        phaseTotals.arrests[index + 1] = Math.round(cumulativeArrests);
     });
     
     console.log('Phase totals calculated:', phaseTotals);
-    console.log('Arrests per phase:', arrestsPerPhase);
 }
 
 // Update summary statistics based on current phase
@@ -112,10 +130,7 @@ function updateSummaryStats() {
     // Use the totals for the current phase
     const protestTotal = phaseTotals.protests[currentPhase] || 0;
     const protesterTotal = phaseTotals.protesters[currentPhase] || 0;
-    
-    // For arrests, use the total from the data directly
-    // This ensures we display the actual value rather than the phase-calculated one
-    const arrestTotal = dashboardData.total_arrests || 0;
+    const arrestTotal = phaseTotals.arrests[currentPhase] || 0;
     
     document.getElementById('total-protests').textContent = protestTotal.toLocaleString();
     document.getElementById('total-protesters').textContent = protesterTotal.toLocaleString();
