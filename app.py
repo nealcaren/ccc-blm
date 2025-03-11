@@ -67,16 +67,16 @@ def process_data():
         size=('size_mean_imputed', 'sum')
     ).reset_index()
     
-    # Phase 5: Monthly counts May-October 2020 (Floyd protests)
-    phase5_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')]
-    phase5_monthly = phase5_data.groupby('month').agg(
+    # Phase 4: Monthly counts May-October 2020 (Floyd protests)
+    phase4_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')]
+    phase4_monthly = phase4_data.groupby('month').agg(
         count=('date', 'size'),
         size=('size_mean_imputed', 'sum')
     ).reset_index()
     
-    # Phase 6: Monthly counts since November 2020
-    phase6_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
-    phase6_monthly = phase6_data.groupby('month').agg(
+    # Phase 5: Monthly counts since November 2020
+    phase5_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
+    phase5_monthly = phase5_data.groupby('month').agg(
         count=('date', 'size'),
         size=('size_mean_imputed', 'sum')
     ).reset_index()
@@ -112,8 +112,8 @@ def process_data():
         'phase1_monthly': phase1_monthly.to_dict('records'),
         'phase2_monthly': phase2_monthly.to_dict('records'),
         'phase3_monthly': phase3_monthly.to_dict('records'),
+        'phase4_monthly': phase4_monthly.to_dict('records'),
         'phase5_monthly': phase5_monthly.to_dict('records'),
-        'phase6_monthly': phase6_monthly.to_dict('records'),
         'table_data': table_records,
         'total_protests': len(df),
         'total_protesters': total_protesters,
