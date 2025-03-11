@@ -50,7 +50,7 @@ def process_data():
     df['month'] = df['date'].dt.strftime('%Y-%m')
     
     # Phase 1: Beginning until July 2014
-    phase1_data = df[df['date'] <= '2014-07-31']
+    phase1_data = df[df['date'] <= '2014-07-31'].copy()
     # Create a location identifier by combining locality and state
     phase1_data['location'] = phase1_data['locality'] + ', ' + phase1_data['state']
     phase1_monthly = phase1_data.groupby('month').agg(
@@ -60,7 +60,7 @@ def process_data():
     ).reset_index()
     
     # Phase 2: August 2014 until December 2016
-    phase2_data = df[(df['date'] > '2014-07-31') & (df['date'] <= '2016-12-31')]
+    phase2_data = df[(df['date'] > '2014-07-31') & (df['date'] <= '2016-12-31')].copy()
     # Create a location identifier by combining locality and state
     phase2_data['location'] = phase2_data['locality'] + ', ' + phase2_data['state']
     phase2_monthly = phase2_data.groupby('month').agg(
@@ -70,7 +70,7 @@ def process_data():
     ).reset_index()
     
     # Phase 3: January 2017 until April 2020
-    phase3_data = df[(df['date'] > '2016-12-31') & (df['date'] <= '2020-04-30')]
+    phase3_data = df[(df['date'] > '2016-12-31') & (df['date'] <= '2020-04-30')].copy()
     # Create a location identifier by combining locality and state
     phase3_data['location'] = phase3_data['locality'] + ', ' + phase3_data['state']
     phase3_monthly = phase3_data.groupby('month').agg(
@@ -80,7 +80,7 @@ def process_data():
     ).reset_index()
     
     # Phase 4: Monthly counts May-October 2020 (Floyd protests)
-    phase4_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')]
+    phase4_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')].copy()
     # Create a location identifier by combining locality and state
     phase4_data['location'] = phase4_data['locality'] + ', ' + phase4_data['state']
     phase4_monthly = phase4_data.groupby('month').agg(
