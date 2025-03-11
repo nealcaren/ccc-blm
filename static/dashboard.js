@@ -18,8 +18,7 @@ let locationFilteredData = [];
 let phaseTotals = {
     protests: {},
     protesters: {},
-    arrests: {},
-    locations: {}
+    arrests: {}
 };
 
 // Fetch and load the data
@@ -88,26 +87,17 @@ function calculatePhaseTotals() {
     let cumulativeProtesters = 0;
     
     // For arrests, we'll use the actual arrest data from each phase
-    // Track cumulative arrests and locations for phase totals
+    // Track cumulative arrests for phase totals
     let cumulativeArrests = 0;
-    let cumulativeLocations = new Set(); // Use a Set to track unique locations across phases
     
     phases.forEach((phase, index) => {
         const phaseData = dashboardData[phase];
         let phaseProtests = 0;
         let phaseProtesters = 0;
-        let phaseLocations = new Set(); // Track unique locations in this phase
         
         phaseData.forEach(item => {
             phaseProtests += item.count || 0;
             phaseProtesters += item.size || 0;
-            
-            // Add locations from this phase to both phase-specific and cumulative sets
-            // The locations field is already the count of unique locations for that month
-            if (item.locations) {
-                // We're tracking the total unique locations, not adding up the monthly counts
-                // This is handled in the phase totals calculation below
-            }
         });
         
         cumulativeProtests += phaseProtests;
@@ -116,7 +106,9 @@ function calculatePhaseTotals() {
         // Calculate phase-specific arrests by summing the actual arrest data
         let phaseArrests = 0;
         phaseData.forEach(item => {
-            phaseArrests += item.arrests || 0;
+            // Make sure we're parsing the arrests value as a number
+            const arrestValue = parseFloat(item.arrests) || 0;
+            phaseArrests += arrestValue;
         });
         
         // Add to cumulative arrests
@@ -130,7 +122,7 @@ function calculatePhaseTotals() {
         
         // Log the first few months with arrest data for verification
         const arrestSamples = phaseData
-            .filter(item => item.arrests && item.arrests > 0)
+            .filter(item => parseFloat(item.arrests) > 0)
             .slice(0, 3)
             .map(item => `${item.month}: ${item.arrests}`);
         
@@ -138,34 +130,10 @@ function calculatePhaseTotals() {
             console.log(`Phase ${index + 1} arrest samples: ${arrestSamples.join(', ')}`);
         }
         
-        // For locations, we need a better approximation
-        // We'll use a percentage of the total unique locations based on protest counts
-        // This gives a more realistic distribution than simply adding monthly counts
-        let phaseLocationCount = 0;
-        phaseData.forEach(item => {
-            phaseLocationCount += item.locations || 0;
-        });
-        
         // Store cumulative totals for each phase
         phaseTotals.protests[index + 1] = cumulativeProtests;
         phaseTotals.protesters[index + 1] = cumulativeProtesters;
         phaseTotals.arrests[index + 1] = Math.round(cumulativeArrests);
-        
-        // For locations, use a more reasonable estimate
-        // We'll assume about 20% overlap between months within a phase
-        const uniqueLocationsEstimate = Math.round(phaseLocationCount * 0.8);
-        
-        if (index === 0) {
-            phaseTotals.locations[index + 1] = uniqueLocationsEstimate;
-        } else {
-            // Assume some overlap between phases too (about 10%)
-            const previousPhaseLocations = phaseTotals.locations[index];
-            const combinedLocations = previousPhaseLocations + uniqueLocationsEstimate;
-            // Reduce by estimated overlap
-            phaseTotals.locations[index + 1] = Math.round(combinedLocations * 0.9);
-        }
-        
-        console.log(`Phase ${index + 1} locations: Raw count=${phaseLocationCount}, Estimated unique=${uniqueLocationsEstimate}, Cumulative=${phaseTotals.locations[index + 1]}`);
     });
     
     console.log('Phase totals calculated:', phaseTotals);
@@ -177,19 +145,16 @@ function updateSummaryStats() {
     const protestTotal = phaseTotals.protests[currentPhase] || 0;
     const protesterTotal = phaseTotals.protesters[currentPhase] || 0;
     const arrestTotal = phaseTotals.arrests[currentPhase] || 0;
-    const locationTotal = phaseTotals.locations[currentPhase] || 0;
     
     document.getElementById('total-protests').textContent = protestTotal.toLocaleString();
     document.getElementById('total-protesters').textContent = protesterTotal.toLocaleString();
     document.getElementById('total-arrests').textContent = arrestTotal.toLocaleString();
-    document.getElementById('total-locations').textContent = locationTotal.toLocaleString();
     
     // Log for debugging
     console.log('Updated summary stats:', {
         protests: protestTotal,
         protesters: protesterTotal,
         arrests: arrestTotal,
-        locations: locationTotal,
         rawArrestsValue: dashboardData.total_arrests
     });
 }
@@ -273,9 +238,6 @@ function updateWeeklyChart() {
     } else if (currentDataType === 'protesters') {
         data = dashboardData.weekly_counts.map(item => item.protester_count);
         label = 'Number of Protesters';
-    } else {
-        data = dashboardData.weekly_counts.map(item => item.locations);
-        label = 'Unique Locations';
     }
     
     // Update chart data
@@ -391,9 +353,6 @@ function updatePhaseChart() {
     } else if (currentPhaseDataType === 'protesters') {
         dataField = 'size';
         dataLabel = 'Total Protesters';
-    } else if (currentPhaseDataType === 'locations') {
-        dataField = 'locations';
-        dataLabel = 'Unique Locations';
     } else if (currentPhaseDataType === 'arrests') {
         dataField = 'arrests';
         dataLabel = 'Total Arrests';
@@ -832,8 +791,7 @@ function processAnnualData() {
         years: [],
         protests: {},
         protesters: {},
-        arrests: {},
-        locations: {}
+        arrests: {}
     };
     
     // Extract years from the data
@@ -853,7 +811,6 @@ function processAnnualData() {
         annualData.protests[year] = 0;
         annualData.protesters[year] = 0;
         annualData.arrests[year] = 0;
-        annualData.locations[year] = new Set();
     });
     
     // Process weekly data to get annual totals
@@ -868,19 +825,6 @@ function processAnnualData() {
         }
     });
     
-    // Process location data
-    dashboardData.table_data.forEach(protest => {
-        if (protest.date) {
-            const year = protest.date.substring(0, 4);
-            if (annualData.years.includes(year)) {
-                // Add location to the set for this year
-                if (protest.locality && protest.state) {
-                    const location = `${protest.locality}, ${protest.state}`;
-                    annualData.locations[year].add(location);
-                }
-            }
-        }
-    });
     
     // Process arrests data - we need to go through the phase data
     const allPhaseData = [
@@ -900,10 +844,6 @@ function processAnnualData() {
         }
     });
     
-    // Convert location sets to counts
-    annualData.years.forEach(year => {
-        annualData.locations[year] = annualData.locations[year].size;
-    });
     
     console.log('Processed annual data:', annualData);
 }
@@ -991,11 +931,6 @@ function updateAnnualChart() {
             backgroundColor = '#7570b3';
             label = 'Number of Arrests';
             break;
-        case 'locations':
-            data = labels.map(year => annualData.locations[year]);
-            backgroundColor = '#e7298a';
-            label = 'Unique Locations';
-            break;
     }
     
     // Update chart data
@@ -1077,8 +1012,7 @@ function updateAnnualChartForLocation(location) {
     const locationAnnualData = {
         protests: {},
         protesters: {},
-        arrests: {},
-        locations: {}
+        arrests: {}
     };
     
     // Initialize counters for each year
@@ -1086,7 +1020,6 @@ function updateAnnualChartForLocation(location) {
         locationAnnualData.protests[year] = 0;
         locationAnnualData.protesters[year] = 0;
         locationAnnualData.arrests[year] = 0;
-        locationAnnualData.locations[year] = 0;
     });
     
     // Process the filtered data
@@ -1096,8 +1029,6 @@ function updateAnnualChartForLocation(location) {
             if (annualData.years.includes(year)) {
                 locationAnnualData.protests[year]++;
                 locationAnnualData.protesters[year] += protest.size_mean || 0;
-                // For location-specific data, we count each location as 1
-                locationAnnualData.locations[year] = 1;
             }
         }
     });
@@ -1113,9 +1044,6 @@ function updateAnnualChartForLocation(location) {
             break;
         case 'arrests':
             data = annualData.years.map(year => 0); // We don't have arrest data by location
-            break;
-        case 'locations':
-            data = annualData.years.map(year => locationAnnualData.locations[year]);
             break;
     }
     
@@ -1138,9 +1066,6 @@ function updateAnnualChartForAllLocations() {
             break;
         case 'arrests':
             data = annualData.years.map(year => annualData.arrests[year]);
-            break;
-        case 'locations':
-            data = annualData.years.map(year => annualData.locations[year]);
             break;
     }
     
