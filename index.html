@@ -122,6 +122,16 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <span>Annual Totals</span>
                     <div>
+                        <div class="btn-group btn-group-sm me-2" role="group">
+                            <input type="radio" class="btn-check" name="annualDataType" id="annualDataType1" value="protests" checked>
+                            <label class="btn btn-outline-secondary" for="annualDataType1">Protests</label>
+                            <input type="radio" class="btn-check" name="annualDataType" id="annualDataType2" value="protesters">
+                            <label class="btn btn-outline-secondary" for="annualDataType2">Protesters</label>
+                            <input type="radio" class="btn-check" name="annualDataType" id="annualDataType3" value="arrests">
+                            <label class="btn btn-outline-secondary" for="annualDataType3">Arrests</label>
+                            <input type="radio" class="btn-check" name="annualDataType" id="annualDataType4" value="locations">
+                            <label class="btn btn-outline-secondary" for="annualDataType4">Locations</label>
+                        </div>
                         <div class="input-group input-group-sm">
                             <input type="text" id="location-search" class="form-control" placeholder="Search location (e.g., 'Durham, NC')">
                             <button class="btn btn-outline-secondary" type="button" id="location-search-button">Search</button>

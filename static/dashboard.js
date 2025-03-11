@@ -8,6 +8,7 @@ let annualChart = null;
 let currentPhase = 1;
 let currentDataType = 'count';
 let currentPhaseDataType = 'count';
+let currentAnnualDataType = 'protests';
 let useLogScale = false;
 let filteredTableData = [];
 let searchTerm = '';
@@ -911,45 +912,27 @@ function processAnnualData() {
 function initializeAnnualChart() {
     const ctx = document.getElementById('annual-chart').getContext('2d');
     
-    // Prepare data for the chart
+    // Prepare data for the chart based on selected type
     const labels = annualData.years;
-    const datasets = [
-        {
-            label: 'Protests',
-            data: labels.map(year => annualData.protests[year]),
-            backgroundColor: '#1b9e77',
-            borderColor: '#1b9e77',
-            borderWidth: 1
-        },
-        {
-            label: 'Protesters (÷100)',
-            data: labels.map(year => Math.round(annualData.protesters[year] / 100)),
-            backgroundColor: '#d95f02',
-            borderColor: '#d95f02',
-            borderWidth: 1
-        },
-        {
-            label: 'Arrests',
-            data: labels.map(year => annualData.arrests[year]),
-            backgroundColor: '#7570b3',
-            borderColor: '#7570b3',
-            borderWidth: 1
-        },
-        {
-            label: 'Locations',
-            data: labels.map(year => annualData.locations[year]),
-            backgroundColor: '#e7298a',
-            borderColor: '#e7298a',
-            borderWidth: 1
-        }
-    ];
+    let data, backgroundColor, label;
     
-    // Create the chart
+    // Set initial data based on default type (protests)
+    data = labels.map(year => annualData.protests[year]);
+    backgroundColor = '#1b9e77';
+    label = 'Number of Protests';
+    
+    // Create the chart with a single dataset
     annualChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
-            datasets: datasets
+            datasets: [{
+                label: label,
+                data: data,
+                backgroundColor: backgroundColor,
+                borderColor: backgroundColor,
+                borderWidth: 1
+            }]
         },
         options: {
             responsive: true,
@@ -968,15 +951,60 @@ function initializeAnnualChart() {
                     intersect: false
                 },
                 legend: {
-                    display: true,
-                    position: 'top'
+                    display: false
                 }
             }
         }
     });
     
+    // Add event listeners for annual data type
+    document.querySelectorAll('input[name="annualDataType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            currentAnnualDataType = this.value;
+            updateAnnualChart();
+        });
+    });
+    
     // Set up location search functionality
     setupLocationSearch();
+}
+
+// Update the annual chart based on selected data type
+function updateAnnualChart() {
+    const labels = annualData.years;
+    let data, backgroundColor, label;
+    
+    // Set data based on selected type
+    switch(currentAnnualDataType) {
+        case 'protests':
+            data = labels.map(year => annualData.protests[year]);
+            backgroundColor = '#1b9e77';
+            label = 'Number of Protests';
+            break;
+        case 'protesters':
+            data = labels.map(year => annualData.protesters[year]);
+            backgroundColor = '#d95f02';
+            label = 'Number of Protesters';
+            break;
+        case 'arrests':
+            data = labels.map(year => annualData.arrests[year]);
+            backgroundColor = '#7570b3';
+            label = 'Number of Arrests';
+            break;
+        case 'locations':
+            data = labels.map(year => annualData.locations[year]);
+            backgroundColor = '#e7298a';
+            label = 'Unique Locations';
+            break;
+    }
+    
+    // Update chart data
+    annualChart.data.datasets[0].data = data;
+    annualChart.data.datasets[0].label = label;
+    annualChart.data.datasets[0].backgroundColor = backgroundColor;
+    annualChart.data.datasets[0].borderColor = backgroundColor;
+    
+    annualChart.update();
 }
 
 // Set up location search functionality
@@ -1069,21 +1097,50 @@ function updateAnnualChartForLocation(location) {
         }
     });
     
+    // Get data based on current data type
+    let data;
+    switch(currentAnnualDataType) {
+        case 'protests':
+            data = annualData.years.map(year => locationAnnualData.protests[year]);
+            break;
+        case 'protesters':
+            data = annualData.years.map(year => locationAnnualData.protesters[year]);
+            break;
+        case 'arrests':
+            data = annualData.years.map(year => 0); // We don't have arrest data by location
+            break;
+        case 'locations':
+            data = annualData.years.map(year => locationAnnualData.locations[year]);
+            break;
+    }
+    
     // Update the chart with the new data
-    annualChart.data.datasets[0].data = annualData.years.map(year => locationAnnualData.protests[year]);
-    annualChart.data.datasets[1].data = annualData.years.map(year => Math.round(locationAnnualData.protesters[year] / 100));
-    annualChart.data.datasets[2].data = annualData.years.map(year => 0); // We don't have arrest data by location
-    annualChart.data.datasets[3].data = annualData.years.map(year => locationAnnualData.locations[year]);
+    annualChart.data.datasets[0].data = data;
     
     annualChart.update();
 }
 
 // Update the annual chart to show all locations (reset)
 function updateAnnualChartForAllLocations() {
-    annualChart.data.datasets[0].data = annualData.years.map(year => annualData.protests[year]);
-    annualChart.data.datasets[1].data = annualData.years.map(year => Math.round(annualData.protesters[year] / 100));
-    annualChart.data.datasets[2].data = annualData.years.map(year => annualData.arrests[year]);
-    annualChart.data.datasets[3].data = annualData.years.map(year => annualData.locations[year]);
+    // Get data based on current data type
+    let data;
+    switch(currentAnnualDataType) {
+        case 'protests':
+            data = annualData.years.map(year => annualData.protests[year]);
+            break;
+        case 'protesters':
+            data = annualData.years.map(year => annualData.protesters[year]);
+            break;
+        case 'arrests':
+            data = annualData.years.map(year => annualData.arrests[year]);
+            break;
+        case 'locations':
+            data = annualData.years.map(year => annualData.locations[year]);
+            break;
+    }
+    
+    // Update the chart with the new data
+    annualChart.data.datasets[0].data = data;
     
     annualChart.update();
 }
