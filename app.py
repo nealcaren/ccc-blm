@@ -125,9 +125,10 @@ def process_data():
         'top_localities': df['locality'].value_counts().head(5).to_dict()
     }
     
-    # Write to JSON file
-    with open('static/data.json', 'w') as f:
-        json.dump(output_data, f, default=str)  # Use default=str to handle any non-serializable objects
+    # Write to JSON file with proper encoding
+    with open('static/data.json', 'w', encoding='utf-8') as f:
+        # Convert any problematic values to strings and ensure proper JSON formatting
+        json.dump(output_data, f, default=str, ensure_ascii=False, indent=2)
     
     print(f"Data processed successfully. {len(df)} protests analyzed.")
     return output_data

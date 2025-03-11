@@ -20,10 +20,17 @@ async function loadData() {
         }
         
         try {
-            dashboardData = await response.json();
+            const text = await response.text();
+            try {
+                dashboardData = JSON.parse(text);
+            } catch (jsonError) {
+                console.error('JSON parse error:', jsonError);
+                console.error('First 500 characters of response:', text.substring(0, 500));
+                throw new Error('Failed to parse data file. The JSON may be malformed.');
+            }
         } catch (parseError) {
-            console.error('JSON parse error:', parseError);
-            throw new Error('Failed to parse data file. The JSON may be malformed.');
+            console.error('Text parsing error:', parseError);
+            throw new Error('Failed to read data file content.');
         }
         
         // Initialize filtered data
