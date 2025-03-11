@@ -95,24 +95,6 @@ def process_data():
     output_data = {
         'weekly_counts': weekly_counts.to_dict('records'),
         'daily_protester_counts': daily_protester_counts.to_dict('records'),
-        'phase1_monthly': phase1_monthly.to_dict('records'),
-        'phase2_monthly': phase2_monthly.to_dict('records'),
-        'phase3_monthly': phase3_monthly.to_dict('records'),
-        'table_data': table_records,
-        'total_protests': len(df),
-        'total_protesters': total_protesters,
-        'date_range': {
-            'start': df['date'].min().strftime('%Y-%m-%d'),
-            'end': df['date'].max().strftime('%Y-%m-%d')
-        },
-        'top_states': df['state'].value_counts().head(5).to_dict(),
-        'top_localities': df['locality'].value_counts().head(5).to_dict()
-    }
-    
-    # Create the output data structure
-    output_data = {
-        'weekly_counts': weekly_counts.to_dict('records'),
-        'daily_protester_counts': daily_protester_counts.to_dict('records'),
         'phase4_monthly': phase4_monthly.to_dict('records'),
         'phase5_monthly': phase5_monthly.to_dict('records'),
         'phase6_monthly': phase6_monthly.to_dict('records'),
