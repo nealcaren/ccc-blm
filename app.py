@@ -46,6 +46,9 @@ def process_data():
     ).reset_index()
     weekly_counts['start_date'] = weekly_counts['start_date'].dt.strftime('%Y-%m-%d')
     
+    # Replace any NaN values with None (which will be serialized as null in JSON)
+    weekly_counts = weekly_counts.where(pd.notnull(weekly_counts), None)
+    
     # Create data for phased visualization
     df['month'] = df['date'].dt.strftime('%Y-%m')
     
@@ -58,6 +61,8 @@ def process_data():
         size=('size_mean_imputed', 'sum'),
         locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
+    # Replace any NaN values with None
+    phase1_monthly = phase1_monthly.where(pd.notnull(phase1_monthly), None)
     
     # Phase 2: August 2014 until December 2016
     phase2_data = df[(df['date'] > '2014-07-31') & (df['date'] <= '2016-12-31')].copy()
@@ -68,6 +73,8 @@ def process_data():
         size=('size_mean_imputed', 'sum'),
         locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
+    # Replace any NaN values with None
+    phase2_monthly = phase2_monthly.where(pd.notnull(phase2_monthly), None)
     
     # Phase 3: January 2017 until April 2020
     phase3_data = df[(df['date'] > '2016-12-31') & (df['date'] <= '2020-04-30')].copy()
@@ -78,6 +85,8 @@ def process_data():
         size=('size_mean_imputed', 'sum'),
         locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
+    # Replace any NaN values with None
+    phase3_monthly = phase3_monthly.where(pd.notnull(phase3_monthly), None)
     
     # Phase 4: Monthly counts May-October 2020 (Floyd protests)
     phase4_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')].copy()
@@ -88,6 +97,8 @@ def process_data():
         size=('size_mean_imputed', 'sum'),
         locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
+    # Replace any NaN values with None
+    phase4_monthly = phase4_monthly.where(pd.notnull(phase4_monthly), None)
     
     # Phase 5: Monthly counts since November 2020
     phase5_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
@@ -98,6 +109,8 @@ def process_data():
         size=('size_mean_imputed', 'sum'),
         locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
+    # Replace any NaN values with None
+    phase5_monthly = phase5_monthly.where(pd.notnull(phase5_monthly), None)
     
     # Create a sample of the data for the table view
     # Select relevant columns
@@ -123,6 +136,8 @@ def process_data():
         protester_count=('size_mean_imputed', 'sum')
     ).reset_index()
     daily_protester_counts['date'] = daily_protester_counts['date'].dt.strftime('%Y-%m-%d')
+    # Replace any NaN values with None
+    daily_protester_counts = daily_protester_counts.where(pd.notnull(daily_protester_counts), None)
     
     # Create the output data structure
     output_data = {
@@ -150,7 +165,8 @@ def process_data():
         class CustomJSONEncoder(json.JSONEncoder):
             def default(self, obj):
                 import numpy as np
-                if isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj)):
+                import pandas as pd
+                if pd.isna(obj) or (isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj))):
                     return None
                 return super().default(obj)
         
