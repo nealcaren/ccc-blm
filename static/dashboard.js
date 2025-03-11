@@ -264,7 +264,7 @@ function updatePhaseChart() {
     if (currentPhase === 1) {
         // Phase 1: Beginning until July 2014
         titleElement.textContent = '2012 to 2014: Building Tension';
-        descriptionElement.textContent = `In the early 2010s, protests against police brutality were often small and focused on local incidents of brutality.`;
+        descriptionElement.textContent = `Prior to 2014, while police brutality protests remained relatively localized, the 2012 killing of Trayvon Martin by neighborhood watch volunteer George Zimmerman and his 2013 acquittal sparked nationwide outrage and mobilization, giving rise to the Black Lives Matter hashtag and laying crucial groundwork for the movement against racialized violence that would soon emerge.`;
         
         // Use the data field directly from our processed data
         data = dashboardData.phase1_monthly.map(item => item[dataField] || 0);
