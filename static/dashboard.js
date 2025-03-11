@@ -245,7 +245,7 @@ function updatePhaseChart() {
     // Prepare data based on current phase
     if (currentPhase === 1) {
         // Phase 1: Beginning until July 2014
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 1';
+        titleElement.textContent = '2012 to the Summer of 2014';
         const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
         descriptionElement.textContent = `Monthly ${countType} from the beginning until July 2014.`;
         
@@ -257,7 +257,7 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 2) {
         // Phase 2: August 2014 until December 2016
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 2';
+        titleElement.textContent = 'The Emergence of Black Lives Matter: August 2014 until December 2016';
         const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
         descriptionElement.textContent = `Monthly ${countType} through December 2016, including earlier data.`;
         
