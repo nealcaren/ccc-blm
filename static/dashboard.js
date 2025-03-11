@@ -8,6 +8,8 @@ let currentPhase = 1;
 let currentDataType = 'count';
 let currentPhaseDataType = 'count';
 let useLogScale = false;
+let filteredTableData = [];
+let searchTerm = '';
 
 // Fetch and load the data
 async function loadData() {
@@ -18,6 +20,9 @@ async function loadData() {
         }
         
         dashboardData = await response.json();
+        
+        // Initialize filtered data
+        filteredTableData = dashboardData.table_data;
         
         // Log data structure for debugging
         console.log('Data loaded:', dashboardData);
@@ -509,34 +514,62 @@ function updatePhaseChart() {
     }
 }
 
+// Filter table data based on search term
+function filterTableData() {
+    if (!searchTerm) {
+        filteredTableData = dashboardData.table_data;
+        return;
+    }
+    
+    const term = searchTerm.toLowerCase();
+    filteredTableData = dashboardData.table_data.filter(protest => {
+        return (
+            (protest.date && protest.date.toLowerCase().includes(term)) ||
+            (protest.locality && protest.locality.toLowerCase().includes(term)) ||
+            (protest.state && protest.state.toLowerCase().includes(term)) ||
+            (protest.type && protest.type.toLowerCase().includes(term)) ||
+            (protest.claims && protest.claims.toLowerCase().includes(term))
+        );
+    });
+}
+
 // Update the data table
 function updateTable() {
     const tableBody = document.getElementById('data-table-body');
     const pagination = document.getElementById('pagination');
     
+    // Filter data based on search term
+    filterTableData();
+    
     // Calculate pagination
-    const totalPages = Math.ceil(dashboardData.table_data.length / pageSize);
+    const totalPages = Math.ceil(filteredTableData.length / pageSize);
     const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = Math.min(startIndex + pageSize, dashboardData.table_data.length);
+    const endIndex = Math.min(startIndex + pageSize, filteredTableData.length);
     
     // Clear the table
     tableBody.innerHTML = '';
     
-    // Add data rows
-    for (let i = startIndex; i < endIndex; i++) {
-        const protest = dashboardData.table_data[i];
+    if (filteredTableData.length === 0) {
         const row = document.createElement('tr');
-        
-        row.innerHTML = `
-            <td>${protest.date}</td>
-            <td>${protest.locality}</td>
-            <td>${protest.state}</td>
-            <td>${protest.type}</td>
-            <td>${protest.claims}</td>
-            <td>${protest.size_mean}</td>
-        `;
-        
+        row.innerHTML = '<td colspan="6" class="text-center">No matching protests found</td>';
         tableBody.appendChild(row);
+    } else {
+        // Add data rows
+        for (let i = startIndex; i < endIndex; i++) {
+            const protest = filteredTableData[i];
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${protest.date}</td>
+                <td>${protest.locality}</td>
+                <td>${protest.state}</td>
+                <td>${protest.type}</td>
+                <td>${protest.claims}</td>
+                <td>${protest.size_mean}</td>
+            `;
+            
+            tableBody.appendChild(row);
+        }
     }
     
     // Update pagination
@@ -607,5 +640,40 @@ document.getElementById('page-size').addEventListener('change', function() {
     updateTable();
 });
 
+// Handle search functionality
+function setupSearchFunctionality() {
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const clearButton = document.getElementById('clear-search');
+    
+    // Search when button is clicked
+    searchButton.addEventListener('click', () => {
+        searchTerm = searchInput.value.trim();
+        currentPage = 1; // Reset to first page
+        updateTable();
+    });
+    
+    // Search when Enter key is pressed
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchTerm = searchInput.value.trim();
+            currentPage = 1; // Reset to first page
+            updateTable();
+        }
+    });
+    
+    // Clear search
+    clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        searchTerm = '';
+        currentPage = 1; // Reset to first page
+        updateTable();
+    });
+}
+
 // Initialize the dashboard when the page loads
-document.addEventListener('DOMContentLoaded', loadData);
+document.addEventListener('DOMContentLoaded', () => {
+    loadData().then(() => {
+        setupSearchFunctionality();
+    });
+});
