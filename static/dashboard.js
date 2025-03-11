@@ -19,6 +19,12 @@ async function loadData() {
         
         dashboardData = await response.json();
         
+        // Log data structure for debugging
+        console.log('Data loaded:', dashboardData);
+        console.log('Phase 1 sample:', dashboardData.phase1_monthly[0]);
+        console.log('Phase 2 sample:', dashboardData.phase2_monthly[0]);
+        console.log('Phase 3 sample:', dashboardData.phase3_monthly[0]);
+        
         // Initialize the dashboard
         updateSummaryStats();
         initializePhaseChart();
@@ -212,6 +218,9 @@ function initializePhaseChart() {
             updatePhaseChart();
         });
     });
+    
+    // Initial call to set up the chart with the default data type
+    updatePhaseChart();
 }
 
 // Update the phase chart based on current phase
@@ -225,8 +234,11 @@ function updatePhaseChart() {
     const descriptionElement = document.getElementById('phase-description');
     
     let data, labels, chartType, backgroundColors;
-    const dataField = currentPhaseDataType === 'count' ? 'count' : 'protester_count';
+    // For protester count, we'll use 'participants' field if it exists, otherwise fall back to our estimation
+    const dataField = currentPhaseDataType === 'count' ? 'count' : 'protesters';
     const dataLabel = currentPhaseDataType === 'count' ? 'Number of Protests' : 'Number of Protesters (Estimated)';
+    
+    console.log('Using data field:', dataField);
     
     // Prepare data based on current phase
     if (currentPhase === 1) {
@@ -235,14 +247,21 @@ function updatePhaseChart() {
         const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
         descriptionElement.textContent = `Monthly ${countType} before George Floyd's death (up to April 2020).`;
         
-        // Check if the data field exists, if not, use count as fallback
+        // For protester counts, use participants field or estimate
         data = dashboardData.phase1_monthly.map(item => {
-            if (dataField === 'protester_count' && item[dataField] === undefined) {
-                console.warn('Protester count data not available for phase 1, using estimated values');
-                // Estimate protester count as 100 times the count for demonstration
-                return item.count * 100;
+            if (dataField === 'protesters') {
+                // Try to use participants field if it exists
+                if (item.participants !== undefined) {
+                    return item.participants;
+                } else if (item.protester_count !== undefined) {
+                    return item.protester_count;
+                } else {
+                    console.warn('Protester count data not available for phase 1, using estimated values');
+                    // Estimate protester count as 100 times the count for demonstration
+                    return item.count * 100;
+                }
             }
-            return item[dataField] || 0;
+            return item.count || 0;
         });
         labels = dashboardData.phase1_monthly.map(item => item.month);
         chartType = 'bar';
@@ -266,23 +285,26 @@ function updatePhaseChart() {
         
         // Create a lookup for counts
         const countLookup = {};
-        phase1Data.forEach(item => { 
-            if (dataField === 'protester_count' && item[dataField] === undefined) {
-                // Estimate protester count as 100 times the count for demonstration
-                countLookup[item.month] = item.count * 100;
-            } else {
-                countLookup[item.month] = item[dataField] || 0;
-            }
-        });
         
-        phase2Data.forEach(item => { 
-            if (dataField === 'protester_count' && item[dataField] === undefined) {
-                // Estimate protester count as 100 times the count for demonstration
-                countLookup[item.month] = item.count * 100;
+        // Helper function to set count lookup values
+        const setCountValue = (item) => {
+            if (dataField === 'protesters') {
+                // Try different possible field names for protester counts
+                if (item.participants !== undefined) {
+                    countLookup[item.month] = item.participants;
+                } else if (item.protester_count !== undefined) {
+                    countLookup[item.month] = item.protester_count;
+                } else {
+                    // Estimate protester count as 100 times the count for demonstration
+                    countLookup[item.month] = item.count * 100;
+                }
             } else {
-                countLookup[item.month] = item[dataField] || 0;
+                countLookup[item.month] = item.count || 0;
             }
-        });
+        };
+        
+        phase1Data.forEach(setCountValue);
+        phase2Data.forEach(setCountValue);
         
         labels = allMonths;
         data = allMonths.map(month => countLookup[month] || 0);
@@ -320,13 +342,20 @@ function updatePhaseChart() {
         // Create a lookup for counts
         const countLookup = {};
         
-        // Helper function to handle missing protester_count data
+        // Helper function to handle missing protester count data
         const setCountLookup = (item) => {
-            if (dataField === 'protester_count' && item[dataField] === undefined) {
-                // Estimate protester count as 100 times the count for demonstration
-                countLookup[item.month] = item.count * 100;
+            if (dataField === 'protesters') {
+                // Try different possible field names for protester counts
+                if (item.participants !== undefined) {
+                    countLookup[item.month] = item.participants;
+                } else if (item.protester_count !== undefined) {
+                    countLookup[item.month] = item.protester_count;
+                } else {
+                    // Estimate protester count as 100 times the count for demonstration
+                    countLookup[item.month] = item.count * 100;
+                }
             } else {
-                countLookup[item.month] = item[dataField] || 0;
+                countLookup[item.month] = item.count || 0;
             }
         };
         
