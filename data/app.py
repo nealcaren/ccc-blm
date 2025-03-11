@@ -164,7 +164,7 @@ def process_data():
     }
     
     # Write to JSON file with proper encoding
-    with open('static/data.json', 'w', encoding='utf-8') as f:
+    with open('../static/data.json', 'w', encoding='utf-8') as f:
         # Custom JSON encoder to handle NaN, Infinity, and -Infinity
         class CustomJSONEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -201,7 +201,7 @@ def process_data():
 
 if __name__ == "__main__":
     # Create static directory if it doesn't exist
-    os.makedirs('static', exist_ok=True)
+    os.makedirs('../static', exist_ok=True)
     try:
         data = process_data()
         print(f"Date range: {data['date_range']['start']} to {data['date_range']['end']}")
