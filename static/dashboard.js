@@ -112,7 +112,7 @@ function updateSummaryStats() {
     
     document.getElementById('total-protests').textContent = protestTotal.toLocaleString();
     document.getElementById('total-protesters').textContent = protesterTotal.toLocaleString();
-    document.getElementById('top-state').textContent = arrestTotal.toLocaleString();
+    document.getElementById('total-arrests').textContent = arrestTotal.toLocaleString();
 }
 
 
