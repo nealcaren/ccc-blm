@@ -1894,3 +1894,126 @@
 
 # 2025-03-11 06:36:43.646527
 +Y
+
+# 2025-03-11 06:38:27.989857
++Fix
+
+# 2025-03-11 06:38:38.191921
++Y
+
+# 2025-03-11 06:38:38.194925
++/run git remote set-url origin https://github.com/nealcaren/blm-web.git
+
+# 2025-03-11 06:38:38.195024
++/run git remote set-url origin https://github.com/nealcaren/blm-web.git
+
+# 2025-03-11 06:38:38.687870
++/run git push -u origin main
+
+# 2025-03-11 06:38:38.687986
++/run git push -u origin main
+
+# 2025-03-11 06:38:41.727923
++Y
+
+# 2025-03-11 06:38:43.852429
++N
+
+# 2025-03-11 06:38:49.497936
++I haven't created the reposotiry yet
+
+# 2025-03-11 06:39:27.532111
++Y
+
+# 2025-03-11 06:39:50.174640
++/run  git remote add origin https://github.com/nealcaren/blm-web.git  
+
+# 2025-03-11 06:39:57.489363
++N
+
+# 2025-03-11 06:40:00.196901
++/run  git push -u origin master 
+
+# 2025-03-11 06:40:05.231219
++Yes
+
+# 2025-03-11 06:40:34.765530
++What's wrong? Fix. I think we created something called "YOUR_REPO_NAME" in one of the files.
+
+# 2025-03-11 06:40:47.985820
++Y
+
+# 2025-03-11 06:40:58.257817
++What's wrong? Fix. I think we created something called "YOUR_REPO_NAME" in one of the git files.
+
+# 2025-03-11 06:41:05.851975
++y
+
+# 2025-03-11 06:41:05.854800
++/run grep -r "YOUR_REPO_NAME" --include="*.*" .
+
+# 2025-03-11 06:41:05.854884
++/run grep -r "YOUR_REPO_NAME" --include="*.*" .
+
+# 2025-03-11 06:41:11.592998
++y
+
+# 2025-03-11 06:41:35.582606
++What's wrong? Fix. I think we created something called "YOUR_REPO_NAME" in one of the git files.
+
+# 2025-03-11 06:41:47.708330
++y
+
+# 2025-03-11 06:41:47.713945
++/run git remote -v
+
+# 2025-03-11 06:41:47.714146
++/run git remote -v
+
+# 2025-03-11 06:41:51.504946
++y
+
+# 2025-03-11 06:41:57.940462
++N
+
+# 2025-03-11 06:42:12.332397
++This is supposed to be the repo name
+
+# 2025-03-11 06:42:19.462779
++This is uspposed to be the repo name : https://github.com/nealcaren/ccc-bam
+
+# 2025-03-11 06:42:21.680210
++N
+
+# 2025-03-11 06:42:26.810605
++Y
+
+# 2025-03-11 06:42:26.815943
++/run git remote set-url origin https://github.com/nealcaren/ccc-bam.git
+
+# 2025-03-11 06:42:26.816131
++/run git remote set-url origin https://github.com/nealcaren/ccc-bam.git
+
+# 2025-03-11 06:42:28.401685
++Y
+
+# 2025-03-11 06:42:28.408029
++/run git remote -v
+
+# 2025-03-11 06:42:28.408398
++/run git remote -v
+
+# 2025-03-11 06:42:45.868164
++Y
+
+# 2025-03-11 06:42:50.161236
++what next?
+
+# 2025-03-11 06:42:55.998213
++Y
+
+# 2025-03-11 06:42:56.001517
++/run git add .
+
+# 2025-03-11 06:42:56.001621
++/run git add .
