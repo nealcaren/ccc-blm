@@ -91,8 +91,8 @@ def process_data():
     # Handle missing values - impute unknown sizes with 11
     table_data['size_mean'] = table_data['size_mean'].fillna(11)
     
-    # Convert to records
-    table_records = table_data.head(1000).to_dict('records')
+    # Convert to records - include all protests
+    table_records = table_data.to_dict('records')
     
     # Calculate total protesters (imputing 11 for missing values)
     df['size_mean_imputed'] = df['size_mean'].fillna(11)
