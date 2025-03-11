@@ -107,7 +107,8 @@ def process_data():
     table_data['date'] = table_data['date'].dt.strftime('%Y-%m-%d')
     
     # Format size values - leave missing values as empty strings for display
-    table_data['size_mean'] = table_data['size_mean'].apply(lambda x: '' if pd.isna(x) or x == 11 else x)
+    # Convert NaN to None (which will be serialized as null in JSON)
+    table_data['size_mean'] = table_data['size_mean'].apply(lambda x: None if pd.isna(x) or x == 11 else x)
     
     # Convert to records - include all protests
     table_records = table_data.to_dict('records')
@@ -145,8 +146,16 @@ def process_data():
     
     # Write to JSON file with proper encoding
     with open('static/data.json', 'w', encoding='utf-8') as f:
-        # Convert any problematic values to strings and ensure proper JSON formatting
-        json.dump(output_data, f, default=str, ensure_ascii=False, indent=2)
+        # Custom JSON encoder to handle NaN, Infinity, and -Infinity
+        class CustomJSONEncoder(json.JSONEncoder):
+            def default(self, obj):
+                import numpy as np
+                if isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj)):
+                    return None
+                return super().default(obj)
+        
+        # Convert any problematic values and ensure proper JSON formatting
+        json.dump(output_data, f, cls=CustomJSONEncoder, default=str, ensure_ascii=False, indent=2)
     
     print(f"Data processed successfully. {len(df)} protests analyzed.")
     return output_data
