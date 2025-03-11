@@ -7,3 +7,8 @@ __pycache__/
 .aider.chat.history.md
 .aider.input.history
 .aider.tags.cache.v4/cache.db-wal
+.aider.tags.cache.v4/cache.db-wal
+.aider.tags.cache.v4/cache.db-shm
+.aider.tags.cache.v4/cache.db
+.aider.input.history
+.aider.chat.history.md
