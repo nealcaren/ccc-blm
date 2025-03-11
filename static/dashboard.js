@@ -207,6 +207,7 @@ function initializePhaseChart() {
     // Add event listeners for phase data type
     document.querySelectorAll('input[name="phaseDataType"]').forEach(radio => {
         radio.addEventListener('change', function() {
+            console.log('Phase data type changed to:', this.value);
             currentPhaseDataType = this.value;
             updatePhaseChart();
         });
@@ -401,6 +402,7 @@ function updatePhaseChart() {
         phaseChart.data.labels = labels;
         phaseChart.data.datasets[0].data = data;
         phaseChart.data.datasets[0].backgroundColor = backgroundColors;
+        phaseChart.data.datasets[0].label = dataLabel;
         
         phaseChart.update();
     }
