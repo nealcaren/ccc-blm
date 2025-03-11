@@ -1,0 +1,1866 @@
+
+# 2025-03-10 15:15:07.334818
++Y
+
+# 2025-03-10 15:17:05.030078
++Okay. I want to create a simple web dashboard to share my data. It is currently in a csv file. I want to use Python to extract the relevant data to be displayed. Then, use HTML/JS to create the dashboard. The dashboard should show a figure with the daily count of protests. It should also have a section where you can tab therough the data, although only showing a few cells. Here's the current format of the CSV. Walk me through your best idea? {
++  "basic_info": {
++    "file_info": {
++      "file_name": "police_brutality_protests.csv",
++      "directory": "/Users/nealcaren/Documents/GitHub/ccc-blm-web",
++      "size_bytes": 17139944,
++      "size_mb": 16.35,
++      "created_date": "2025-03-10T14:40:02.728270",
++      "modified_date": "2025-03-07T21:57:36.502119",
++      "encoding": "utf-8"
++    },
++    "num_rows": 28575,
++    "num_columns": 76,
++    "total_cells": 2171700,
++    "missing_cells": 1263009,
++    "missing_percentage": 58.16,
++    "duplicate_rows": 0,
++    "duplicate_percentage": 0.0
++  },
++  "column_analysis": {
++    "date": {
++      "data_type": "object",
++      "unique_value_count": 2238,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "top_3_values": {
++        "2020-06-06": 755,
++        "2020-05-31": 667,
++        "2020-06-07": 537
++      },
++      "mode_value": "2020-06-06",
++      "top_3_percentage": 6.86
++    },
++    "locality": {
++      "data_type": "object",
++      "unique_value_count": 2964,
++      "missing_value_count": 1,
++      "missing_percentage": 0.0,
++      "top_3_values": {
++        "New York": 2885,
++        "Sherman Oaks": 1683,
++        "Rockford": 1104
++      },
++      "mode_value": "New York",
++      "top_3_percentage": 19.85
++    },
++    "state": {
++      "data_type": "object",
++      "unique_value_count": 53,
++      "missing_value_count": 3,
++      "missing_percentage": 0.01,
++      "top_3_values": {
++        "CA": 5029,
++        "NY": 4022,
++        "IL": 1821
++      },
++      "mode_value": "CA",
++      "top_3_percentage": 38.05,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "location_detail": {
++      "data_type": "object",
++      "unique_value_count": 11576,
++      "missing_value_count": 2184,
++      "missing_percentage": 7.64,
++      "top_3_values": {
++        "Sherman Oaks Galleria, Sepulveda Blvd and Ventura Blvd": 1679,
++        "Rockford City Hall": 1063,
++        "McCarren Park, Brooklyn": 1002
++      },
++      "mode_value": "Sherman Oaks Galleria, Sepulveda Blvd and Ventura Blvd",
++      "top_3_percentage": 13.1
++    },
++    "online": {
++      "data_type": "float64",
++      "unique_value_count": 2,
++      "missing_value_count": 4,
++      "missing_percentage": 0.01,
++      "mean_value": 0.0,
++      "std_dev": 0.03,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 0.0
++    },
++    "type": {
++      "data_type": "object",
++      "unique_value_count": 324,
++      "missing_value_count": 1,
++      "missing_percentage": 0.0,
++      "top_3_values": {
++        "protest": 8647,
++        "demonstration": 7102,
++        "vigil": 2887
++      },
++      "mode_value": "protest",
++      "top_3_percentage": 65.22,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "macroevent": {
++      "data_type": "object",
++      "unique_value_count": 913,
++      "missing_value_count": 27272,
++      "missing_percentage": 95.44,
++      "top_3_values": {
++        "20200607-laconia-blm": 3,
++        "20200607-spokane-blm": 3,
++        "20221012-nyc-srg": 3
++      },
++      "mode_value": "20200607-laconia-blm",
++      "top_3_percentage": 0.03,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "participants": {
++      "data_type": "object",
++      "unique_value_count": 2720,
++      "missing_value_count": 12271,
++      "missing_percentage": 42.94,
++      "top_3_values": {
++        "general protesters": 9188,
++        "students": 429,
++        "family": 358
++      },
++      "mode_value": "general protesters",
++      "top_3_percentage": 34.91
++    },
++    "claims": {
++      "data_type": "object",
++      "unique_value_count": 7163,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "top_3_values": {
++        "antiracism; against police brutality": 7199,
++        "against racism, against police brutality": 3098,
++        "against racism, against police violence": 1677
++      },
++      "mode_value": "antiracism; against police brutality",
++      "top_3_percentage": 41.9
++    },
++    "valence": {
++      "data_type": "float64",
++      "unique_value_count": 3,
++      "missing_value_count": 2,
++      "missing_percentage": 0.01,
++      "mean_value": 0.99,
++      "std_dev": 0.23,
++      "min_value": 0.0,
++      "max_value": 2.0,
++      "median": 1.0
++    },
++    "issue_tags": {
++      "data_type": "category",
++      "unique_value_count": 1374,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "top_3_values": {
++        "policing; racism": 11616,
++        "policing;racism": 8792,
++        "policing": 1203
++      },
++      "mode_value": "policing; racism",
++      "top_3_percentage": 75.63,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "size_text": {
++      "data_type": "object",
++      "unique_value_count": 2022,
++      "missing_value_count": 18182,
++      "missing_percentage": 63.63,
++      "top_3_values": {
++        "count video": 1151,
++        "hundreds": 1010,
++        "count pic": 752
++      },
++      "mode_value": "count video",
++      "top_3_percentage": 10.19
++    },
++    "size_low": {
++      "data_type": "float64",
++      "unique_value_count": 214,
++      "missing_value_count": 18060,
++      "missing_percentage": 63.2,
++      "mean_value": 297.23,
++      "std_dev": 3704.5,
++      "min_value": 1.0,
++      "max_value": 360000.0,
++      "median": 100.0
++    },
++    "size_high": {
++      "data_type": "float64",
++      "unique_value_count": 224,
++      "missing_value_count": 18068,
++      "missing_percentage": 63.23,
++      "mean_value": 388.87,
++      "std_dev": 4372.77,
++      "min_value": 1.0,
++      "max_value": 360000.0,
++      "median": 100.0
++    },
++    "size_mean": {
++      "data_type": "float64",
++      "unique_value_count": 263,
++      "missing_value_count": 18060,
++      "missing_percentage": 63.2,
++      "mean_value": 342.95,
++      "std_dev": 3921.24,
++      "min_value": 1.0,
++      "max_value": 360000.0,
++      "median": 100.0
++    },
++    "size_cat": {
++      "data_type": "int64",
++      "unique_value_count": 5,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 0.59,
++      "std_dev": 0.86,
++      "min_value": 0.0,
++      "max_value": 4.0,
++      "median": 0.0
++    },
++    "arrests": {
++      "data_type": "object",
++      "unique_value_count": 144,
++      "missing_value_count": 19254,
++      "missing_percentage": 67.38,
++      "mean_value": 1.92,
++      "std_dev": 19.48,
++      "min_value": 0.0,
++      "max_value": 866.0,
++      "median": 0.0
++    },
++    "arrests_any": {
++      "data_type": "int64",
++      "unique_value_count": 2,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 0.04,
++      "std_dev": 0.21,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 0.0
++    },
++    "injuries_crowd": {
++      "data_type": "object",
++      "unique_value_count": 23,
++      "missing_value_count": 19508,
++      "missing_percentage": 68.27,
++      "mean_value": 0.05,
++      "std_dev": 0.38,
++      "min_value": 0.0,
++      "max_value": 11.0,
++      "median": 0.0
++    },
++    "injuries_crowd_any": {
++      "data_type": "int64",
++      "unique_value_count": 2,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 0.01,
++      "std_dev": 0.12,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 0.0
++    },
++    "injuries_police": {
++      "data_type": "object",
++      "unique_value_count": 37,
++      "missing_value_count": 19567,
++      "missing_percentage": 68.48,
++      "mean_value": 0.08,
++      "std_dev": 1.26,
++      "min_value": 0.0,
++      "max_value": 92.0,
++      "median": 0.0
++    },
++    "injuries_police_any": {
++      "data_type": "int64",
++      "unique_value_count": 2,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 0.01,
++      "std_dev": 0.09,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 0.0
++    },
++    "property_damage": {
++      "data_type": "object",
++      "unique_value_count": 113,
++      "missing_value_count": 19364,
++      "missing_percentage": 67.77,
++      "mean_value": 0.06,
++      "std_dev": 0.33,
++      "min_value": 0.0,
++      "max_value": 22.0,
++      "median": 0.0
++    },
++    "property_damage_any": {
++      "data_type": "int64",
++      "unique_value_count": 2,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 0.03,
++      "std_dev": 0.16,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 0.0
++    },
++    "chemical_agents": {
++      "data_type": "float64",
++      "unique_value_count": 2,
++      "missing_value_count": 10894,
++      "missing_percentage": 38.12,
++      "mean_value": 0.02,
++      "std_dev": 0.15,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 0.0
++    },
++    "source_1": {
++      "data_type": "object",
++      "unique_value_count": 15616,
++      "missing_value_count": 14,
++      "missing_percentage": 0.05,
++      "top_3_values": {
++        "https://www.instagram.com/p/CU_P39hJaOc/?utm_source=ig_web_copy_link": 1175,
++        "https://twitter.com/M30Alliance/status/1370029296509652993": 931,
++        "https://twitter.com/desireejweber/status/1557052880187805696": 503
++      },
++      "mode_value": "https://www.instagram.com/p/CU_P39hJaOc/?utm_source=ig_web_copy_link",
++      "top_3_percentage": 9.13
++    },
++    "source_2": {
++      "data_type": "object",
++      "unique_value_count": 6904,
++      "missing_value_count": 17751,
++      "missing_percentage": 62.12,
++      "top_3_values": {
++        "https://www.instagram.com/p/CaSTboAu4rQ/": 553,
++        "https://www.instagram.com/westwednesday/": 396,
++        "https://www.the-daily-record.com/story/news/local/2022/11/25/900-days-wayne-blm-sees-more-to-be-done-works-to-start-conversations/69670266007/": 393
++      },
++      "mode_value": "https://www.instagram.com/p/CaSTboAu4rQ/",
++      "top_3_percentage": 4.7
++    },
++    "source_3": {
++      "data_type": "object",
++      "unique_value_count": 3389,
++      "missing_value_count": 24044,
++      "missing_percentage": 84.14,
++      "top_3_values": {
++        "https://www.the-daily-record.com/story/news/local/2023/01/07/black-lives-matter-rallies-in-wooster-near-1000-days-as-2023-begins/69784548007/": 346,
++        "https://twitter.com/ActionSonora/status/1308937277695877123": 223,
++        "https://www.instagram.com/p/Cn0kEJfNppE/": 218
++      },
++      "mode_value": "https://www.the-daily-record.com/story/news/local/2023/01/07/black-lives-matter-rallies-in-wooster-near-1000-days-as-2023-begins/69784548007/",
++      "top_3_percentage": 2.75
++    },
++    "source_4": {
++      "data_type": "object",
++      "unique_value_count": 1730,
++      "missing_value_count": 26403,
++      "missing_percentage": 92.4,
++      "top_3_values": {
++        "https://twitter.com/SiavashSamei/status/1624822808097222656": 315,
++        "https://www.inquirer.com/news/philadelphia/university-city-townhomes-encampment-protest-disband-judge-20220722.html": 29,
++        "https://twitter.com/PdxActivist/status/1573000491319304192": 14
++      },
++      "mode_value": "https://twitter.com/SiavashSamei/status/1624822808097222656",
++      "top_3_percentage": 1.25
++    },
++    "source_5": {
++      "data_type": "object",
++      "unique_value_count": 1032,
++      "missing_value_count": 27476,
++      "missing_percentage": 96.15,
++      "top_3_values": {
++        "1.0": 26,
++        "https://www.youtube.com/watch?v=s2t9GoxlL_I": 8,
++        "https://clkrep.lacity.org/onlinedocs/2020/20-0729_rpt_CLA_03-11-21.pdf": 7
++      },
++      "mode_value": "1.0",
++      "top_3_percentage": 0.14,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_6": {
++      "data_type": "object",
++      "unique_value_count": 680,
++      "missing_value_count": 27873,
++      "missing_percentage": 97.54,
++      "top_3_values": {
++        "https://twitter.com/tuesdaylongway/status/1496675868004864003": 5,
++        "1.0": 4,
++        "https://www.bostonherald.com/2020/10/19/counter-protesters-accused-of-assaulting-boston-police-officers-at-copley-square-dueling-rallies/": 2
++      },
++      "mode_value": "https://twitter.com/tuesdaylongway/status/1496675868004864003",
++      "top_3_percentage": 0.04,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_7": {
++      "data_type": "object",
++      "unique_value_count": 463,
++      "missing_value_count": 28100,
++      "missing_percentage": 98.34,
++      "top_3_values": {
++        "https://twitter.com/theradioradical/status/1496639268243922948": 4,
++        "https://www.nbcnews.com/news/nbcblk/kentucky-derby-protesters-counterprotesters-confront-each-other-ahead-race-n1239421": 3,
++        "https://abc7.com/pickup-truck-drives-through-protesters-in-buffalo-injuring-1/6530894/": 2
++      },
++      "mode_value": "https://twitter.com/theradioradical/status/1496639268243922948",
++      "top_3_percentage": 0.03,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_8": {
++      "data_type": "object",
++      "unique_value_count": 340,
++      "missing_value_count": 28075,
++      "missing_percentage": 98.25,
++      "top_3_values": {
++        "1.0": 154,
++        "https://www.wdrb.com/derby_146/words-exchanged-between-armed-militia-group-protesters-at-jefferson-square-park/article_45a735a6-efa1-11ea-b501-cfd00721b724.html": 3,
++        "100.0": 2
++      },
++      "mode_value": "1.0",
++      "top_3_percentage": 0.56,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_9": {
++      "data_type": "object",
++      "unique_value_count": 244,
++      "missing_value_count": 28326,
++      "missing_percentage": 99.13,
++      "top_3_values": {
++        "https://www.wdrb.com/news/nfac-members-march-to-churchill-downs-before-running-of-kentucky-derby/article_e1cb36ea-efb4-11ea-8338-9766763fcbb9.html": 3,
++        "https://www.wtkr.com/news/america-in-crisis/police-and-protesters-clash-in-violent-weekend-across-the-us": 2,
++        "https://kelo.com/2023/03/05/fire-breaks-out-at-atlanta-police-training-center-after-protest-media/": 2
++      },
++      "mode_value": "https://www.wdrb.com/news/nfac-members-march-to-churchill-downs-before-running-of-kentucky-derby/article_e1cb36ea-efb4-11ea-8338-9766763fcbb9.html",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_10": {
++      "data_type": "object",
++      "unique_value_count": 191,
++      "missing_value_count": 28380,
++      "missing_percentage": 99.32,
++      "top_3_values": {
++        "https://www.wdrb.com/news/no-justice-no-derby-louisville-protesters-march-to-churchill-downs/article_d6287d96-efbb-11ea-baf1-17896d418e29.html": 3,
++        "https://wkzo.com/2023/03/05/fire-breaks-out-at-atlanta-police-training-center-after-protest-media/": 2,
++        "https://www.mprnews.org/story/2020/09/27/npr-woman-charged-with-attempted-murder-after-driving-into-pro-trump-protesters": 2
++      },
++      "mode_value": "https://www.wdrb.com/news/no-justice-no-derby-louisville-protesters-march-to-churchill-downs/article_d6287d96-efbb-11ea-baf1-17896d418e29.html",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_11": {
++      "data_type": "object",
++      "unique_value_count": 144,
++      "missing_value_count": 28429,
++      "missing_percentage": 99.49,
++      "top_3_values": {
++        "https://www.wtnh.com/news/connecticut/connecticut-woman-among-23-charged-with-domestic-terrorism-after-violent-protest-in-atlanta/": 2,
++        "https://twitter.com/chadloder/status/1389312137797849088": 2,
++        "https://www.nbcnews.com/news/us-news/two-protesters-seattle-seriously-injured-when-hit-car-closed-highway-n1232907": 1
++      },
++      "mode_value": "https://www.wtnh.com/news/connecticut/connecticut-woman-among-23-charged-with-domestic-terrorism-after-violent-protest-in-atlanta/",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_12": {
++      "data_type": "object",
++      "unique_value_count": 121,
++      "missing_value_count": 28452,
++      "missing_percentage": 99.57,
++      "top_3_values": {
++        "https://www.wabe.org/35-detained-after-a-violent-protest-at-cop-city-site/": 2,
++        "https://twitter.com/waterspider__/status/1399350389967790081": 2,
++        "https://www.cbsnews.com/news/seattle-car-drives-into-protesters-i-5-today-2020-07-04/": 1
++      },
++      "mode_value": "https://www.wabe.org/35-detained-after-a-violent-protest-at-cop-city-site/",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_13": {
++      "data_type": "object",
++      "unique_value_count": 102,
++      "missing_value_count": 28471,
++      "missing_percentage": 99.64,
++      "top_3_values": {
++        "https://www.instagram.com/p/CxqWLxiLJGa/": 2,
++        "https://www.cbsnews.com/news/atlanta-cop-city-police-training-site-protest-arrests/": 2,
++        "https://www.aljazeera.com/news/2020/07/car-slams-protesters-closed-seattle-highway-200704141653521.html": 1
++      },
++      "mode_value": "https://www.instagram.com/p/CxqWLxiLJGa/",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_14": {
++      "data_type": "object",
++      "unique_value_count": 84,
++      "missing_value_count": 28490,
++      "missing_percentage": 99.7,
++      "top_3_values": {
++        "https://www.kold.com/2023/03/06/police-dozens-arrested-after-violent-protest-atlanta-public-training-centers-future-site/": 2,
++        "https://www.11alive.com/article/news/nation-world/protesters-hit-by-car-on-i-5/281-50f663e8-7adf-4a1a-873d-96540dbc624b": 1,
++        "https://kentwired.com/118994/latest-updates/shooting-survivor-joins-students-to-protest-kyle-rittenhouses-campus-visit/": 1
++      },
++      "mode_value": "https://www.kold.com/2023/03/06/police-dozens-arrested-after-violent-protest-atlanta-public-training-centers-future-site/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_15": {
++      "data_type": "object",
++      "unique_value_count": 66,
++      "missing_value_count": 28507,
++      "missing_percentage": 99.76,
++      "top_3_values": {
++        "https://triblive.com/news/world/police-and-protesters-clash-in-violent-weekend-across-the-us/": 2,
++        "https://thehill.com/homenews/state-watch/3885867-35-detained-after-police-protesters-clash-in-atlanta/": 2,
++        "https://www.pinalcentral.com/graphic-seattle-wa-multiple-blm-protesters-struck-by-vehicle-on-freeway-chop/video_97500c4b-f4dc-5f4c-aa61-e555c6b3522d.html": 1
++      },
++      "mode_value": "https://triblive.com/news/world/police-and-protesters-clash-in-violent-weekend-across-the-us/",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_16": {
++      "data_type": "object",
++      "unique_value_count": 53,
++      "missing_value_count": 28520,
++      "missing_percentage": 99.81,
++      "top_3_values": {
++        "https://triblive.com/news/world/police-and-protesters-clash-in-violent-weekend-across-the-us/": 2,
++        "https://www.washingtonexaminer.com/policy/courts/splc-attorney-among-23-others-facing-domestic-terrorism-charges": 2,
++        "https://www.upi.com/Top_News/US/2024/06/05/stanford-university-protesters-briefly-occupy-presidents-office/3971717610257/": 1
++      },
++      "mode_value": "https://triblive.com/news/world/police-and-protesters-clash-in-violent-weekend-across-the-us/",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_17": {
++      "data_type": "object",
++      "unique_value_count": 51,
++      "missing_value_count": 28520,
++      "missing_percentage": 99.81,
++      "top_3_values": {
++        "1.0": 3,
++        "https://www.nbc4i.com/news/u-s-world/police-and-protesters-clash-in-violent-weekend-across-the-us/": 2,
++        "https://www.cbsnews.com/colorado/news/colorado-man-arrested-atlanta-police-training-facility-protest/": 2
++      },
++      "mode_value": "1.0",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_18": {
++      "data_type": "object",
++      "unique_value_count": 39,
++      "missing_value_count": 28535,
++      "missing_percentage": 99.86,
++      "top_3_values": {
++        "https://www.nbcnews.com/news/us-news/23-protesters-charged-domestic-terrorism-clash-atlanta-police-cop-city-rcna73604": 2,
++        "https://twitter.com/sensitivevisual/status/1386745884747128833": 1,
++        "https://t.me/WOLProtest/651": 1
++      },
++      "mode_value": "https://www.nbcnews.com/news/us-news/23-protesters-charged-domestic-terrorism-clash-atlanta-police-cop-city-rcna73604",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_19": {
++      "data_type": "object",
++      "unique_value_count": 33,
++      "missing_value_count": 28538,
++      "missing_percentage": 99.87,
++      "top_3_values": {
++        "1.0": 4,
++        "https://truthout.org/articles/atlanta-was-a-constitution-free-zone-during-stop-cop-city-week-of-action/": 2,
++        "https://www.firstalert4.com/2024/08/10/officers-injured-multiple-arrests-protest-outside-ferguson-police-department/": 1
++      },
++      "mode_value": "1.0",
++      "top_3_percentage": 0.02,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_20": {
++      "data_type": "object",
++      "unique_value_count": 26,
++      "missing_value_count": 28549,
++      "missing_percentage": 99.91,
++      "top_3_values": {
++        "https://www.baltimoresun.com/politics/bs-md-pol-us-capitol-riot-national-guard-20210916-idujhwrs2fcrhinmvoacf7xlva-story.html": 1,
++        "https://www.wxyz.com/news/violent-protest-in-downtown-atlanta-over-killing-of-activist": 1,
++        "https://www.tiktok.com/@adriftincyberspaces/video/7419785915087785259": 1
++      },
++      "mode_value": "https://www.baltimoresun.com/politics/bs-md-pol-us-capitol-riot-national-guard-20210916-idujhwrs2fcrhinmvoacf7xlva-story.html",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_21": {
++      "data_type": "object",
++      "unique_value_count": 21,
++      "missing_value_count": 28554,
++      "missing_percentage": 99.93,
++      "top_3_values": {
++        "https://www.npr.org/2021/09/16/1037508166/the-capitol-faces-its-biggest-security-test-since-jan-6-on-Saturday": 1,
++        "https://fightbacknews.org/articles/emory-protesters-demand-free-palestine-police-brutalize-and-arrest": 1,
++        "https://fightbacknews.org/articles/philadelphia-hundreds-march-for-palestine-at-harris-trump-debate": 1
++      },
++      "mode_value": "https://www.npr.org/2021/09/16/1037508166/the-capitol-faces-its-biggest-security-test-since-jan-6-on-Saturday",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_22": {
++      "data_type": "object",
++      "unique_value_count": 16,
++      "missing_value_count": 28559,
++      "missing_percentage": 99.94,
++      "top_3_values": {
++        "https://www.theatlantic.com/magazine/archive/2022/01/january-6-insurrection-trump-coup-2024-election/620843/": 1,
++        "https://www.nydailynews.com/new-york/nyc-crime/ny-thirteen-protesters-charges-jordan-neely-subway-demonstration-20230507-7jrqhtkywrgftb7nhudyil3sza-story.html": 1,
++        "https://www.fox5ny.com/news/pro-palestine-rally-police-arrests-christmas-gaza": 1
++      },
++      "mode_value": "https://www.theatlantic.com/magazine/archive/2022/01/january-6-insurrection-trump-coup-2024-election/620843/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_23": {
++      "data_type": "object",
++      "unique_value_count": 12,
++      "missing_value_count": 28563,
++      "missing_percentage": 99.96,
++      "top_3_values": {
++        "https://www.instagram.com/p/C1KMmXjA59D/": 1,
++        "https://forward.com/fast-forward/582081/new-york-rafah-protest-tunnel/": 1,
++        "https://www.foxla.com/video/1423652": 1
++      },
++      "mode_value": "https://www.instagram.com/p/C1KMmXjA59D/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_24": {
++      "data_type": "object",
++      "unique_value_count": 9,
++      "missing_value_count": 28566,
++      "missing_percentage": 99.97,
++      "top_3_values": {
++        "https://www.dailykos.com/stories/2024/3/10/2228739/-LAPD-attacks-pro-Palestine-march-Oscars-briefly-delayed": 1,
++        "https://abc7chicago.com/usc-protest-pro-palestinian-demonstrators-police-clash-during-rally-at-alumni-park-university-of-southern-california-campus/14728289/": 1,
++        "https://thehill.com/homenews/education/4621477-dc-students-faculty-launch-combined-pro-palestine-protest-gwu/": 1
++      },
++      "mode_value": "https://www.dailykos.com/stories/2024/3/10/2228739/-LAPD-attacks-pro-Palestine-march-Oscars-briefly-delayed",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_25": {
++      "data_type": "object",
++      "unique_value_count": 6,
++      "missing_value_count": 28569,
++      "missing_percentage": 99.98,
++      "top_3_values": {
++        "https://abc11.com/usc-protest-pro-palestinian-demonstrators-police-clash-during-rally-at-alumni-park-university-of-southern-california-campus/14728289/": 1,
++        "https://www.13wmaz.com/video/news/national/93-da555f92-3c35-4052-8e2c-4126e408a490": 1,
++        "https://www.12news.com/article/news/local/valley/asu-pro-palestine-protest-timeline/75-9a202d10-7aab-4d7b-9600-0f653172dea0": 1
++      },
++      "mode_value": "https://abc11.com/usc-protest-pro-palestinian-demonstrators-police-clash-during-rally-at-alumni-park-university-of-southern-california-campus/14728289/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_26": {
++      "data_type": "object",
++      "unique_value_count": 6,
++      "missing_value_count": 28569,
++      "missing_percentage": 99.98,
++      "top_3_values": {
++        "https://www.usatoday.com/story/news/education/2024/04/24/university-of-southern-california-gaza-war-protesters-arrested/73447200007/": 1,
++        "https://www.ajc.com/news/atlanta-news/photos-israel-hamas-war-protesters-clash-with-officers-at-emory-in-atlanta/Q4J2CEVJXFDWHNILQ2LEKVR7BM/": 1,
++        "https://apnews.com/article/israel-palestinian-campus-student-protests-war-2ab919ad849c50c9d177a32c0309bd1e": 1
++      },
++      "mode_value": "https://www.usatoday.com/story/news/education/2024/04/24/university-of-southern-california-gaza-war-protesters-arrested/73447200007/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_27": {
++      "data_type": "object",
++      "unique_value_count": 6,
++      "missing_value_count": 28569,
++      "missing_percentage": 99.98,
++      "top_3_values": {
++        "https://www.nbclosangeles.com/news/local/tensions-rise-at-usc-as-pro-palestine-protesters-clash-with-police/3396426/": 1,
++        "https://www.ajc.com/news/students-protestors-and-police-on-emory-universitys-campus-as-protest-continues/5W5TF74CNUDHDA6P4Z66MWVI6M/": 1,
++        "https://www.nbcnews.com/news/us-news/hundreds-palestinian-protesters-arrested-campuses-universities-crack-e-rcna149705": 1
++      },
++      "mode_value": "https://www.nbclosangeles.com/news/local/tensions-rise-at-usc-as-pro-palestine-protesters-clash-with-police/3396426/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_28": {
++      "data_type": "object",
++      "unique_value_count": 6,
++      "missing_value_count": 28569,
++      "missing_percentage": 99.98,
++      "top_3_values": {
++        "https://hoodline.com/2024/04/campus-clashes-usc-protesters-confront-police-amid-tensions-over-palestine-israel-conflict/": 1,
++        "https://www.wabe.org/pro-palestinian-cop-city-protesters-arrested-on-emory-university-campus/": 1,
++        "https://www.azfamily.com/2024/05/06/asu-students-fighting-suspensions-following-pro-palestine-protest-arrests/": 1
++      },
++      "mode_value": "https://hoodline.com/2024/04/campus-clashes-usc-protesters-confront-police-amid-tensions-over-palestine-israel-conflict/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_29": {
++      "data_type": "object",
++      "unique_value_count": 6,
++      "missing_value_count": 28569,
++      "missing_percentage": 99.98,
++      "top_3_values": {
++        "https://ktla.com/news/local-news/pro-palestinian-protesters-police-scuffle-on-usc-campus/": 1,
++        "https://www.fox5atlanta.com/news/protest-underway-at-emory-university-in-support-of-palestine-stop-cop-city": 1,
++        "https://www.azfamily.com/2024/05/15/judge-dismisses-cases-71-pro-palestine-protesters-arrested-asu-tempe-campus/": 1
++      },
++      "mode_value": "https://ktla.com/news/local-news/pro-palestinian-protesters-police-scuffle-on-usc-campus/",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "source_30": {
++      "data_type": "object",
++      "unique_value_count": 5,
++      "missing_value_count": 28570,
++      "missing_percentage": 99.98,
++      "top_3_values": {
++        "https://www.foxla.com/news/usc-pro-palestine-tent-protest": 1,
++        "https://www.wsbtv.com/news/local/protesters-leave-emory-universitys-campus-after-police-use-tear-gas-dozens-arrested/HIHQGIUSRRCVTNAE6ZMKIESUFM/": 1,
++        "https://apnews.com/article/israel-palestinian-protest-encampment-brooklyn-museum-nyc-211d56e457b1605cbb222898efece4cc": 1
++      },
++      "mode_value": "https://www.foxla.com/news/usc-pro-palestine-tent-protest",
++      "top_3_percentage": 0.01,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "notes": {
++      "data_type": "object",
++      "unique_value_count": 4400,
++      "missing_value_count": 19233,
++      "missing_percentage": 67.31,
++      "top_3_values": {
++        "West Wednesday every Wednesday since 2013": 398,
++        "every Monday since the death of George Floyd": 348,
++        "every Sunday": 250
++      },
++      "mode_value": "West Wednesday every Wednesday since 2013",
++      "top_3_percentage": 3.49
++    },
++    "lat": {
++      "data_type": "float64",
++      "unique_value_count": 3533,
++      "missing_value_count": 3,
++      "missing_percentage": 0.01,
++      "mean_value": 38.99,
++      "std_dev": 4.46,
++      "min_value": 13.48,
++      "max_value": 66.9,
++      "median": 40.18
++    },
++    "lon": {
++      "data_type": "float64",
++      "unique_value_count": 3537,
++      "missing_value_count": 3,
++      "missing_percentage": 0.01,
++      "mean_value": -91.82,
++      "std_dev": 18.54,
++      "min_value": -162.6,
++      "max_value": 144.8,
++      "median": -84.39
++    },
++    "resolved_locality": {
++      "data_type": "object",
++      "unique_value_count": 2796,
++      "missing_value_count": 117,
++      "missing_percentage": 0.41,
++      "top_3_values": {
++        "New York": 2887,
++        "Los Angeles": 2403,
++        "Rockford": 1104
++      },
++      "mode_value": "New York",
++      "top_3_percentage": 22.38
++    },
++    "resolved_county": {
++      "data_type": "object",
++      "unique_value_count": 1031,
++      "missing_value_count": 3923,
++      "missing_percentage": 13.73,
++      "top_3_values": {
++        "Los Angeles County": 2667,
++        "Wayne County": 1156,
++        "Winnebago County": 1113
++      },
++      "mode_value": "Los Angeles County",
++      "top_3_percentage": 17.27,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "resolved_state": {
++      "data_type": "object",
++      "unique_value_count": 53,
++      "missing_value_count": 6,
++      "missing_percentage": 0.02,
++      "top_3_values": {
++        "CA": 5030,
++        "NY": 4019,
++        "IL": 1820
++      },
++      "mode_value": "CA",
++      "top_3_percentage": 38.04,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "fips_code": {
++      "data_type": "float64",
++      "unique_value_count": 1485,
++      "missing_value_count": 18,
++      "missing_percentage": 0.06,
++      "mean_value": 26423.5,
++      "std_dev": 15398.22,
++      "min_value": 1003.0,
++      "max_value": 72000.0,
++      "median": 26163.0
++    },
++    "source_dataset": {
++      "data_type": "category",
++      "unique_value_count": 2,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "top_3_values": {
++        "2021-2024": 14388,
++        "2017-2020": 14187
++      },
++      "mode_value": "2021-2024",
++      "top_3_percentage": 100.0,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "title": {
++      "data_type": "object",
++      "unique_value_count": 2266,
++      "missing_value_count": 24325,
++      "missing_percentage": 85.13,
++      "top_3_values": {
++        "Vigil Against Racism": 209,
++        "West Wednesday": 192,
++        "Black Lives Matter Vigil for Action": 186
++      },
++      "mode_value": "Vigil Against Racism",
++      "top_3_percentage": 2.05
++    },
++    "organizations": {
++      "data_type": "object",
++      "unique_value_count": 2723,
++      "missing_value_count": 18050,
++      "missing_percentage": 63.17,
++      "top_3_values": {
++        "The Valley of Change": 1461,
++        "May 30th Alliance": 977,
++        "Wayne County Racial Justice Coalition": 538
++      },
++      "mode_value": "The Valley of Change",
++      "top_3_percentage": 10.41
++    },
++    "claims_summary": {
++      "data_type": "object",
++      "unique_value_count": 4143,
++      "missing_value_count": 14411,
++      "missing_percentage": 50.43,
++      "top_3_values": {
++        "against racism;against police brutality": 2625,
++        "against racism;against police violence": 1187,
++        "against police terrorism;against mass incarceration;against racial injustice": 677
++      },
++      "mode_value": "against racism;against police brutality",
++      "top_3_percentage": 15.71
++    },
++    "claims_verbatim": {
++      "data_type": "object",
++      "unique_value_count": 2325,
++      "missing_value_count": 24514,
++      "missing_percentage": 85.79,
++      "top_3_values": {
++        "Black Lives Matter": 1376,
++        "Black Lives Matter;defund the police": 80,
++        "housing is a human right;Black Lives Matter": 29
++      },
++      "mode_value": "Black Lives Matter",
++      "top_3_percentage": 5.2
++    },
++    "issue_tags_summary": {
++      "data_type": "object",
++      "unique_value_count": 788,
++      "missing_value_count": 14526,
++      "missing_percentage": 50.83,
++      "top_3_values": {
++        "policing; racism": 7872,
++        "policing": 1467,
++        "development; environment; policing; racism": 791
++      },
++      "mode_value": "policing; racism",
++      "top_3_percentage": 35.45,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "issue_tags_verbatim": {
++      "data_type": "object",
++      "unique_value_count": 684,
++      "missing_value_count": 24790,
++      "missing_percentage": 86.75,
++      "top_3_values": {
++        "policing; racism": 1950,
++        "policing": 296,
++        "military; policing; racism": 91
++      },
++      "mode_value": "policing; racism",
++      "top_3_percentage": 8.18,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "participant_measures": {
++      "data_type": "object",
++      "unique_value_count": 1410,
++      "missing_value_count": 24715,
++      "missing_percentage": 86.49,
++      "top_3_values": {
++        "encamped outside city hall": 844,
++        "encamped in forest": 253,
++        "encamped in forest; tree sit": 221
++      },
++      "mode_value": "encamped outside city hall",
++      "top_3_percentage": 4.61,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "police_measures": {
++      "data_type": "object",
++      "unique_value_count": 853,
++      "missing_value_count": 27426,
++      "missing_percentage": 95.98,
++      "top_3_values": {
++        "on scene": 179,
++        "called to scene": 22,
++        "participated in vigil": 12
++      },
++      "mode_value": "on scene",
++      "top_3_percentage": 0.75,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "participant_deaths": {
++      "data_type": "float64",
++      "unique_value_count": 1,
++      "missing_value_count": 28570,
++      "missing_percentage": 99.98,
++      "mean_value": 1.0,
++      "std_dev": 0.0,
++      "min_value": 1.0,
++      "max_value": 1.0,
++      "median": 1.0
++    },
++    "police_deaths": {
++      "data_type": "object",
++      "unique_value_count": 1,
++      "missing_value_count": 28574,
++      "missing_percentage": 100.0,
++      "top_3_values": {
++        "https://mauinow.com/2022/04/20/maui-parents-students-rally-against-doe-mask-rules-seek-option-to-choose/": 1
++      },
++      "mode_value": "https://mauinow.com/2022/04/20/maui-parents-students-rally-against-doe-mask-rules-seek-option-to-choose/",
++      "top_3_percentage": 0.0,
++      "optimization_suggestion": "Consider using category dtype"
++    },
++    "on_race": {
++      "data_type": "int64",
++      "unique_value_count": 2,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 0.87,
++      "std_dev": 0.34,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 1.0
++    },
++    "on_police": {
++      "data_type": "int64",
++      "unique_value_count": 1,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 1.0,
++      "std_dev": 0.0,
++      "min_value": 1.0,
++      "max_value": 1.0,
++      "median": 1.0
++    },
++    "on_brutality": {
++      "data_type": "int64",
++      "unique_value_count": 2,
++      "missing_value_count": 0,
++      "missing_percentage": 0.0,
++      "mean_value": 0.89,
++      "std_dev": 0.31,
++      "min_value": 0.0,
++      "max_value": 1.0,
++      "median": 1.0
++    }
++  }
++}
+
+# 2025-03-10 15:17:08.166498
++S
+
+# 2025-03-10 15:18:21.881873
++Y
+
+# 2025-03-10 15:18:27.057035
++U
+
+# 2025-03-10 15:18:30.863980
++Y
+
+# 2025-03-10 15:18:37.118492
++N
+
+# 2025-03-10 15:18:44.633351
++/run python app.py
+
+# 2025-03-10 15:18:48.264914
++Y
+
+# 2025-03-10 15:18:51.036967
++Fix
+
+# 2025-03-10 15:19:23.681951
++Y
+
+# 2025-03-10 15:19:23.684740
++/run python app.py
+
+# 2025-03-10 15:19:23.684813
++/run python app.py
+
+# 2025-03-10 15:19:27.430084
++Y
+
+# 2025-03-10 15:22:23.779756
++Great. Let's get rid of the date range up top, and add something about the total number of protesters. When size is unknown, let's impute 11. Also, can we add a second chart below that has monthly counts, along with the ability to select certain months, with  a dynamic y axis?
+
+# 2025-03-10 15:23:49.842700
++Y
+
+# 2025-03-10 15:23:49.845013
++/run python app.py
+
+# 2025-03-10 15:23:49.845058
++/run python app.py
+
+# 2025-03-10 15:23:53.165907
++Y
+
+# 2025-03-10 15:23:54.386840
++N
+
+# 2025-03-10 15:26:15.662501
++Good. Can we update the first chart so that it is weekly instead of daily? Also, add two options: first, to switch to protester count as the Y axis instead of event count, and an option to swtich to a log scale for the Y axis.
+
+# 2025-03-10 15:31:16.071998
++y
+
+# 2025-03-10 15:31:16.075555
++/run python app.py
+
+# 2025-03-10 15:31:16.075611
++/run python app.py
+
+# 2025-03-10 15:31:19.349402
++Y
+
+# 2025-03-10 15:31:21.772600
++N
+
+# 2025-03-10 15:31:22.681171
++Fix
+
+# 2025-03-10 15:31:42.516489
++Y
+
+# 2025-03-10 15:31:42.519483
++/run python app.py
+
+# 2025-03-10 15:31:42.519531
++/run python app.py
+
+# 2025-03-10 15:31:45.857454
++Y
+
+# 2025-03-10 15:31:47.273369
++N
+
+# 2025-03-10 15:31:48.079725
++Fix
+
+# 2025-03-10 15:32:14.416874
++Y
+
+# 2025-03-10 15:32:14.419691
++/run python app.py
+
+# 2025-03-10 15:32:14.419747
++/run python app.py
+
+# 2025-03-10 15:32:17.742661
++N
+
+# 2025-03-10 15:34:44.418279
++/run python app.py
+
+# 2025-03-10 15:34:47.764253
++N
+
+# 2025-03-10 15:38:27.350432
++would this be possible: Use a broken Y-axis - Split the Y-axis into two sections, with the lower section showing the typical range (0-500) and the upper section showing the extreme values. This preserves all data while making the regular patterns visible.
+
+# 2025-03-10 15:39:55.751231
++Y
+
+# 2025-03-10 15:39:55.755215
++/run python app.py
+
+# 2025-03-10 15:39:55.755313
++/run python app.py
+
+# 2025-03-10 15:39:58.802921
++N
+
+# 2025-03-10 15:40:19.517257
++let's undo that. it didn't work.
+
+# 2025-03-10 15:42:14.800423
++Y
+
+# 2025-03-10 15:42:14.804131
++/run python app.py
+
+# 2025-03-10 15:42:14.804196
++/run python app.py
+
+# 2025-03-10 15:42:18.744668
++Y
+
+# 2025-03-10 15:42:21.666739
++D
+
+# 2025-03-10 15:46:43.568895
++/run uv runn app.py
+
+# 2025-03-10 15:46:47.792596
++/run uv run app.py
+
+# 2025-03-10 15:46:51.862929
++N
+
+# 2025-03-10 16:18:41.013774
++/run uv run app.py
+
+# 2025-03-10 16:18:45.212009
++Y
+
+# 2025-03-10 16:23:19.850787
++Okay. Can we be a little more creative? Let's get rid of hte monthly count. Instead, we want to start with a figure that is the montly count up until and includig April 2020. Then, we want people to click next, and then add from 2020-05 to 2020-10 to show the rise of protest associated with Floyd. Then, third phase will be the weekly count since then. Let's put all this above the standard Weekly Protest Data
+
+# 2025-03-10 16:24:50.163537
++Y
+
+# 2025-03-10 16:24:50.165912
++/run python app.py
+
+# 2025-03-10 16:24:50.165956
++/run python app.py
+
+# 2025-03-10 16:24:53.241258
++Y
+
+# 2025-03-10 16:24:54.579633
++Fix
+
+# 2025-03-10 16:25:50.533485
++Y
+
+# 2025-03-10 16:25:50.535310
++/run python app.py
+
+# 2025-03-10 16:25:50.535347
++/run python app.py
+
+# 2025-03-10 16:25:52.968404
++Y
+
+# 2025-03-10 16:28:40.742648
++I love the transition from Zone one to Two, and espeically the red color. But then it becomes a totally different line chart afterwards. Can we start with hes ffffbf, then fc8d59, then #91bfdb for the third?
+
+# 2025-03-10 16:29:06.941918
++N
+
+# 2025-03-10 16:29:15.050888
++/run python app.py
+
+# 2025-03-10 16:29:19.392748
++N
+
+# 2025-03-10 16:31:01.980298
++First, let's go with better colors. I want 1b9e77 for 1st, d95f02 for second and 7570b3 for third. Second, I want the transition to the third period use the same mechanisms as the earlier transition, so the final result is all three on the same scale.
+
+# 2025-03-10 16:31:45.225972
++Y
+
+# 2025-03-10 16:31:45.228716
++/run python app.py
+
+# 2025-03-10 16:31:45.228756
++/run python app.py
+
+# 2025-03-10 16:31:48.064503
++Y
+
+# 2025-03-10 16:33:01.761501
++Did we change something about the data format? It doesn't seem to be loading in the HTML file.
+
+# 2025-03-10 16:33:24.008771
++Y
+
+# 2025-03-10 16:33:24.010451
++/run python app.py
+
+# 2025-03-10 16:33:24.010497
++/run python app.py
+
+# 2025-03-10 16:33:28.426247
++Y
+
+# 2025-03-10 16:34:59.622937
++Still not visible. I'm getting "// Create combined dataset
++            const allMonths = [...phase1And2Months, ...months].sort();"
+
+# 2025-03-10 16:35:21.266403
++I'm getting uncaught SyntaxError: Identifier 'allMonths' has already been declared 
+
+# 2025-03-10 16:35:45.759247
++N
+
+# 2025-03-10 16:36:08.212622
++/undo
+
+# 2025-03-10 16:37:04.531124
++I've gone back a few to the last working version. Please edit the current js so that third phase is a bar chart, not line chart. 
+
+# 2025-03-10 16:37:33.614532
++D
+
+# 2025-03-10 16:38:44.903821
++The data for the third phase is wrong. It should be  the same monthly counts as the prior periods.
+
+# 2025-03-10 16:39:17.527368
++Y
+
+# 2025-03-10 16:39:17.529402
++/run python app.py
+
+# 2025-03-10 16:39:17.529598
++/run python app.py
+
+# 2025-03-10 16:39:21.662571
++Y
+
+# 2025-03-10 16:40:56.989718
++Something is still off with the third phase. It should be all the monthly counts from the first and second, plus new data. So it should include everthing prior to the third phase too.
+
+# 2025-03-10 16:41:31.594032
++Y
+
+# 2025-03-10 16:41:31.596158
++/run python app.py
+
+# 2025-03-10 16:41:31.596204
++/run python app.py
+
+# 2025-03-10 16:41:35.831105
++Y
+
+# 2025-03-10 16:41:49.670897
++/undo
+
+# 2025-03-10 16:41:59.114965
++whatever you did stopped the data from loading, so I undid it.
+
+# 2025-03-10 16:42:59.441583
++y
+
+# 2025-03-10 16:42:59.444351
++/run python app.py
+
+# 2025-03-10 16:42:59.444400
++/run python app.py
+
+# 2025-03-10 16:43:05.281455
++N
+
+# 2025-03-10 16:43:20.319066
++/undo
+
+# 2025-03-10 16:43:30.924476
++/drop
+
+# 2025-03-10 16:43:34.140059
++/clear
+
+# 2025-03-10 16:43:41.776128
++/add app.py
+
+# 2025-03-10 16:43:48.486521
++/add static/dashboard.js       
+
+# 2025-03-10 16:45:12.344075
++My dashboard starts off by showing three phases of protest, pre floyd, floyd, and after. I set up the after phase wrong, but phase 1 and 2 are perfect. How can I make phase 3 show the entire monthly count of events, color coded by period, the same way I do when I add phase 2?
+
+# 2025-03-10 16:45:41.849605
++Y
+
+# 2025-03-10 16:45:41.851269
++/run python app.py
+
+# 2025-03-10 16:45:41.851330
++/run python app.py
+
+# 2025-03-10 16:45:45.178886
++y
+
+# 2025-03-10 16:46:22.000683
++Whatever you did, made it so the data no longer loads. 
+
+# 2025-03-10 16:46:46.712352
++Y
+
+# 2025-03-10 16:46:46.714220
++/run python app.py
+
+# 2025-03-10 16:46:46.714268
++/run python app.py
+
+# 2025-03-10 16:46:53.712688
++Y
+
+# 2025-03-10 16:47:06.358655
++/undo
+
+# 2025-03-10 16:47:50.502970
++I had two undo the last two edits. Can you try again to add the third phase correctly?
+
+# 2025-03-10 16:48:11.804361
++y
+
+# 2025-03-10 16:48:11.806418
++/run python app.py
+
+# 2025-03-10 16:48:11.806462
++/run python app.py
+
+# 2025-03-10 16:48:16.320783
++N
+
+# 2025-03-10 16:48:32.401653
++"Uncaught SyntaxError: Identifier 'phase1Data' has already been declared (at dashboard.js:272:19)"
+
+# 2025-03-10 16:48:52.628147
++Y
+
+# 2025-03-10 16:48:52.629738
++/run python app.py
+
+# 2025-03-10 16:48:52.629796
++/run python app.py
+
+# 2025-03-10 16:48:55.512227
++N
+
+# 2025-03-10 16:49:02.908783
++Uncaught SyntaxError: Identifier 'allMonths' has already been declared (at dashboard.js:277:19)
+
+# 2025-03-10 16:49:24.408052
++N
+
+# 2025-03-10 16:49:29.872486
++"Uncaught SyntaxError: Identifier 'countLookup' has already been declared (at dashboard.js:284:19)". I see a trend.
+
+# 2025-03-10 16:49:43.757697
++D
+
+# 2025-03-10 16:50:00.451617
++"Uncaught SyntaxError: Identifier 'backgroundColors' has already been declared (at dashboard.js:293:19)" Is there a more general solution to this problem?
+
+# 2025-03-10 16:51:35.311851
++Perfect!!! Can we update the colors: ['#1b9e77','#d95f02','#7570b3']
+
+# 2025-03-10 16:54:03.586490
++Great. It still seems to load wit hthe yellow color on Phase 1. When I click next, it switches to green. 
+
+# 2025-03-10 16:54:32.655077
++Also, can we get rid of the legend on that one? Doesn't make sense.
+
+# 2025-03-10 21:28:26.307902
++Y
+
+# 2025-03-10 21:29:08.652075
++/add app.py
+
+# 2025-03-10 21:29:52.869414
++Can we combie police_brutality_protests_newsbank_prepped.csv with police_brutality_protests.csv before processing the data? They ocer different time periods
+
+# 2025-03-10 21:30:11.184283
++Y
+
+# 2025-03-10 21:30:11.189570
++/run python app.py
+
+# 2025-03-10 21:30:11.189678
++/run python app.py
+
+# 2025-03-10 21:30:17.833117
++Y
+
+# 2025-03-10 21:30:35.188135
++How do I run a server to view the file?
+
+# 2025-03-10 21:39:10.138100
++Can we update so that The Story of Police Brutality Protests has a switch like the Weekly Protest Data so you can switch betewen events and people?
+
+# 2025-03-10 21:41:04.738697
++y
+
+# 2025-03-10 21:43:05.699487
++n
+
+# 2025-03-10 21:43:48.122343
++Good, but the protester count button doesn't do anything. Is there data for it?
+
+# 2025-03-10 21:45:58.825300
++N
+
+# 2025-03-10 21:46:24.193820
++Nothing changes when I click the proters count.
+
+# 2025-03-10 21:47:01.167010
++y
+
+# 2025-03-10 21:47:01.170141
++/run open index.html
+
+# 2025-03-10 21:47:01.170226
++/run open index.html
+
+# 2025-03-10 21:49:00.655510
++Is it using the correct data to do the protester count?
+
+# 2025-03-10 21:49:34.872737
++N
+
+# 2025-03-10 21:50:15.982018
++Should we just be totalling it from the size feature?
+
+# 2025-03-10 21:50:45.149677
++n
+
+# 2025-03-10 21:50:56.001849
++/add app.py
+
+# 2025-03-10 21:51:05.678515
++Do we need to create it in app.py?
+
+# 2025-03-10 21:51:36.722200
++Y
+
+# 2025-03-10 21:51:36.728607
++/run python app.py
+
+# 2025-03-10 21:51:36.728908
++/run python app.py
+
+# 2025-03-10 21:53:03.650606
++N
+
+# 2025-03-10 21:53:39.604936
++Okay. that worked. Next, I'm going to be splitting up the data more to add some earlier time periods. Before I do that, can you rename our current phases 1-3 and 4-6?
+
+# 2025-03-10 21:54:56.184030
++Y
+
+# 2025-03-10 21:55:12.097322
++y
+
+# 2025-03-10 21:55:12.100695
++/run python app.py
+
+# 2025-03-10 21:55:12.100765
++/run python app.py
+
+# 2025-03-10 21:55:16.463260
++y
+
+# 2025-03-10 21:55:19.015852
++D
+
+# 2025-03-10 21:56:39.138848
++Great. Now, new phase 1 is beginning until 2014-07. Phase 2 lasts until 2016-12. Phase 3 ends on 2020-04.
+
+# 2025-03-10 21:57:36.467566
++y
+
+# 2025-03-10 21:57:36.474515
++/run python app.py
+
+# 2025-03-10 21:57:36.474643
++/run python app.py
+
+# 2025-03-10 21:58:10.131456
++n
+
+# 2025-03-10 21:58:32.588294
++That's not quite right. Each new phase should show the months from the old phase also.
+
+# 2025-03-10 21:59:13.617722
++N
+
+# 2025-03-10 22:00:15.156552
++Great. It almost works. First, we need to have different colors for each phase. Second, it doesn't get past phase 3. Let's rename 5 as 4 and 6 as 5.
+
+# 2025-03-10 22:01:30.505445
++Y
+
+# 2025-03-10 22:01:30.508682
++/run python app.py
+
+# 2025-03-10 22:01:30.508760
++/run python app.py
+
+# 2025-03-10 22:02:20.203444
++Y
+
+# 2025-03-11 06:06:12.680794
++Can we add a search to the Protest Data table?
+
+# 2025-03-11 06:07:32.874635
++Y
+
+# 2025-03-11 06:07:32.881083
++/run python app.py
+
+# 2025-03-11 06:07:32.881185
++/run python app.py
+
+# 2025-03-11 06:07:34.234360
++/run open index.html
+
+# 2025-03-11 06:07:34.234460
++/run open index.html
+
+# 2025-03-11 06:09:03.975848
++N
+
+# 2025-03-11 06:09:12.188470
++It doesn't look like the protst data table has all the protests
+
+# 2025-03-11 06:09:25.938280
++y
+
+# 2025-03-11 06:09:25.943630
++/run python app.py
+
+# 2025-03-11 06:09:25.943688
++/run python app.py
+
+# 2025-03-11 06:09:27.055685
++/run open index.html
+
+# 2025-03-11 06:09:27.055798
++/run open index.html
+
+# 2025-03-11 06:09:55.916752
++N
+
+# 2025-03-11 06:10:17.800476
++Also, for the protest data, we need to get rid of the "11" imputted size and replace with blank.
+
+# 2025-03-11 06:10:32.507920
++y
+
+# 2025-03-11 06:10:32.514480
++/run python app.py
+
+# 2025-03-11 06:10:32.514889
++/run python app.py
+
+# 2025-03-11 06:10:35.798105
++y
+
+# 2025-03-11 06:10:48.314828
++"Failed to load data: The string did not match the expected pattern.. Make sure you've run the Python script to generate the data file."
+
+# 2025-03-11 06:11:04.397778
++Y
+
+# 2025-03-11 06:11:04.402544
++/run python app.py
+
+# 2025-03-11 06:11:04.402668
++/run python app.py
+
+# 2025-03-11 06:11:07.586150
++Y
+
+# 2025-03-11 06:11:19.734206
++Failed to load data: The string did not match the expected pattern.. Make sure you've run the Python script to generate the data file.
+
+# 2025-03-11 06:12:15.654749
++Y
+
+# 2025-03-11 06:12:15.658190
++/run python app.py
+
+# 2025-03-11 06:12:15.658274
++/run python app.py
+
+# 2025-03-11 06:12:18.481077
++Y
+
+# 2025-03-11 06:16:45.758576
++In addition to protesters and events, can we add a third option to display which is the number of unique locations, as measured by combo of city state, that had a protest in a  month? we will need to compute this and add to chart
+
+# 2025-03-11 06:19:10.904597
++Y
+
+# 2025-03-11 06:19:10.908786
++/run python app.py
+
+# 2025-03-11 06:19:10.908867
++/run python app.py
+
+# 2025-03-11 06:19:14.718739
++Y
+
+# 2025-03-11 06:19:16.452574
++fix
+
+# 2025-03-11 06:20:27.987691
++Y
+
+# 2025-03-11 06:20:27.992143
++/run python app.py
+
+# 2025-03-11 06:20:27.992226
++/run python app.py
+
+# 2025-03-11 06:20:33.198191
++Y
+
+# 2025-03-11 06:20:55.952172
++On safari, I'm still getting an error message loading the data, since we remove the 11 protester counts. "[Error] JSON parse error: – SyntaxError: JSON Parse error: Unexpected identifier "NaN"
++SyntaxError: JSON Parse error: Unexpected identifier "NaN"
++	(anonymous function) (dashboard.js:27)"
+
+# 2025-03-11 06:21:16.011103
++Y
+
+# 2025-03-11 06:21:16.014203
++/run python app.py
+
+# 2025-03-11 06:21:16.014290
++/run python app.py
+
+# 2025-03-11 06:21:18.560779
++Y
+
+# 2025-03-11 06:21:57.526952
++[Error] JSON parse error: – SyntaxError: JSON Parse error: Unexpected identifier "NaN"
++SyntaxError: JSON Parse error: Unexpected identifier "NaN"
++	(anonymous function) (dashboard.js:27)
+
+# 2025-03-11 06:23:03.373794
++Y
+
+# 2025-03-11 06:23:03.377379
++/run python app.py
+
+# 2025-03-11 06:23:03.377469
++/run python app.py
+
+# 2025-03-11 06:24:30.273938
++Y
+
+# 2025-03-11 06:24:31.708652
++Parse error on line 20814:
++...      "size_mean": NaN    },    {   
++----------------------^
++Expecting 'STRING', 'NUMBER', 'NULL', 'TRUE', 'FALSE', '{', '[', got 'undefined'
+
+# 2025-03-11 06:24:55.339706
++Y
+
+# 2025-03-11 06:24:55.347283
++/run python app.py
+
+# 2025-03-11 06:24:55.347828
++/run python app.py
+
+# 2025-03-11 06:24:59.264589
++Y
+
+# 2025-03-11 06:29:06.789610
++/clear
+
+# 2025-03-11 06:29:08.457876
++/drop
+
+# 2025-03-11 06:29:23.740474
++/add static/dashboard.js
+
+# 2025-03-11 06:29:27.587217
++/add index.html
+
+# 2025-03-11 06:30:04.933008
++Can we move the data to a data folder and put the app.py there? We will need to adjust where app saves the data.json
+
+# 2025-03-11 06:30:07.254955
++Y
+
+# 2025-03-11 06:30:21.779697
++don't retype, just cp it
+
+# 2025-03-11 06:31:07.674090
++No just move the files and chagne one thing, the location of the saved json file
+
+# 2025-03-11 06:31:28.664160
++We just need to do a search and replace fo the json creation.
+
+# 2025-03-11 06:32:41.577733
++Y
+
+# 2025-03-11 06:32:41.583337
++/run mkdir -p data
+
+# 2025-03-11 06:32:41.583427
++/run mkdir -p data
+
+# 2025-03-11 06:32:42.292940
++/run mv app.py data/app.py
+
+# 2025-03-11 06:32:42.293069
++/run mv app.py data/app.py
+
+# 2025-03-11 06:32:44.283769
++Y
+
+# 2025-03-11 06:32:44.290581
++/run python data/app.py
+
+# 2025-03-11 06:32:44.290808
++/run python data/app.py
+
+# 2025-03-11 06:32:59.695290
++Y
+
+# 2025-03-11 06:33:06.626604
++Can we move the two csv files into that folder?
+
+# 2025-03-11 06:33:16.020743
++Y
+
+# 2025-03-11 06:33:53.403978
++/run mv police_brutality_protests.csv data/
+
+# 2025-03-11 06:33:53.404098
++/run mv police_brutality_protests.csv data/
+
+# 2025-03-11 06:33:53.757092
++/run mv police_brutality_protests_newsbank_prepped.csv data/
+
+# 2025-03-11 06:33:53.757198
++/run mv police_brutality_protests_newsbank_prepped.csv data/
+
+# 2025-03-11 06:33:55.309839
++Y
+
+# 2025-03-11 06:33:55.312722
++/run python data/app.py
+
+# 2025-03-11 06:33:55.312802
++/run python data/app.py
+
+# 2025-03-11 06:33:58.983686
++Y
+
+# 2025-03-11 06:34:22.384160
++Fix
+
+# 2025-03-11 06:34:38.036323
++y
+
+# 2025-03-11 06:34:38.042829
++/run python data/app.py
+
+# 2025-03-11 06:34:38.042921
++/run python data/app.py
+
+# 2025-03-11 06:34:40.989062
++Y
+
+# 2025-03-11 06:35:06.767650
++/run python data/app.py
+
+# 2025-03-11 06:35:20.159408
++N
+
+# 2025-03-11 06:35:21.492263
++/run python data/app.py
+
+# 2025-03-11 06:35:25.746510
++Y
+
+# 2025-03-11 06:36:04.288501
++Don't change any code. I want to host this on Github Pages. What do I need to do? I haven't done antyhing. I'll run the python script locally, so no need to create an actoin yet.
+
+# 2025-03-11 06:36:20.539932
++Y
+
+# 2025-03-11 06:36:20.546063
++/run git init
+
+# 2025-03-11 06:36:20.546397
++/run git init
+
+# 2025-03-11 06:36:23.909586
++Y
+
+# 2025-03-11 06:36:27.848957
++/run echo "__pycache__/" > .gitignore
+
+# 2025-03-11 06:36:27.849079
++/run echo "__pycache__/" > .gitignore
+
+# 2025-03-11 06:36:28.212183
++/run echo "*.pyc" >> .gitignore
+
+# 2025-03-11 06:36:28.212285
++/run echo "*.pyc" >> .gitignore
+
+# 2025-03-11 06:36:28.565041
++/run echo ".DS_Store" >> .gitignore
+
+# 2025-03-11 06:36:28.565135
++/run echo ".DS_Store" >> .gitignore
+
+# 2025-03-11 06:36:30.476143
++Y
+
+# 2025-03-11 06:36:31.754964
++/run git add .
+
+# 2025-03-11 06:36:31.755068
++/run git add .
