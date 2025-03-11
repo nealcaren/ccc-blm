@@ -261,9 +261,17 @@ def process_data():
         
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
         
-        # Print the top 10 highest arrest values for verification
+        # Print June 2013 arrests
+        june_2013_arrests = df[
+            (df['date'].dt.to_period('M') == pd.Period('2013-06'))
+            & (df['arrests'] > 0)
+        ][['date', 'locality', 'state', 'arrests']]
+        print("\nJune 2013 arrests:")
+        print(june_2013_arrests.to_string())
+        
+        # Print the top 50 highest arrest values for verification
         top_arrests = df.nlargest(50, 'arrests')[['date', 'locality', 'state', 'arrests']]
-        print(f"Top 50 arrest events after filtering:\n{top_arrests}")
+        print(f"\nTop 50 arrest events after filtering:\n{top_arrests}")
         
         # Calculate annual arrest totals
         df['year'] = df['date'].dt.year
