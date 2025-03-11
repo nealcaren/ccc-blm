@@ -5,6 +5,16 @@ import os
 
 def process_data():
     """Process the CSV data and create a JSON file for the dashboard"""
+    # Define valid US states
+    us_states = {
+        'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+        'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+        'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+        'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+        'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+        'DC'  # Including District of Columbia
+    }
+    
     # Read both CSV files
     csv_path1 = 'data/police_brutality_protests.csv'
     csv_path2 = 'data/police_brutality_protests_newsbank_prepped.csv'
@@ -27,6 +37,9 @@ def process_data():
         
         # Remove duplicates if any
         df = df.drop_duplicates()
+    
+    # Filter to keep only US states
+    df = df[df['state'].isin(us_states)]
     
     # Convert date to datetime
     df['date'] = pd.to_datetime(df['date'])
