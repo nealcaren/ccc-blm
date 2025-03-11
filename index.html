@@ -51,6 +51,32 @@
         .chart-container {
             height: 400px;
         }
+        /* Autocomplete styles */
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #ddd;
+            border-top: none;
+            z-index: 99;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+        .autocomplete-active {
+            background-color: #e9e9e9 !important;
+        }
+        /* Position the autocomplete container properly */
+        .location-search-container {
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -122,7 +148,7 @@
                             <input type="radio" class="btn-check" name="annualDataType" id="annualDataType3" value="arrests">
                             <label class="btn btn-outline-secondary" for="annualDataType3">Arrests</label>
                         </div>
-                        <div class="input-group input-group-sm">
+                        <div class="input-group input-group-sm location-search-container">
                             <input type="text" id="location-search" class="form-control" placeholder="Search location (e.g., 'Durham, NC')">
                             <button class="btn btn-outline-secondary" type="button" id="location-search-button">Search</button>
                             <button class="btn btn-outline-secondary" type="button" id="location-clear-button">Clear</button>

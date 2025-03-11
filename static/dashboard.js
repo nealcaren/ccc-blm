@@ -947,13 +947,82 @@ function updateAnnualChart() {
     annualChart.update();
 }
 
-// Set up location search functionality
+// Set up location search functionality with autocomplete
 function setupLocationSearch() {
     const searchInput = document.getElementById('location-search');
     const searchButton = document.getElementById('location-search-button');
     const clearButton = document.getElementById('location-clear-button');
     const resultsContainer = document.getElementById('location-results-container');
     const resultsTitle = document.getElementById('location-results-title');
+    
+    // Create autocomplete dropdown
+    const autocompleteContainer = document.createElement('div');
+    autocompleteContainer.className = 'autocomplete-items';
+    autocompleteContainer.style.cssText = 'position: absolute; border: 1px solid #ddd; border-top: none; z-index: 99; width: 100%; max-height: 200px; overflow-y: auto; background-color: white;';
+    searchInput.parentNode.appendChild(autocompleteContainer);
+    
+    // Get unique locations from the dataset
+    const uniqueLocations = getUniqueLocations();
+    console.log(`Found ${uniqueLocations.length} unique locations in dataset`);
+    
+    // Add input event listener for autocomplete
+    searchInput.addEventListener('input', function() {
+        const val = this.value.trim().toLowerCase();
+        
+        // Clear previous autocomplete results
+        autocompleteContainer.innerHTML = '';
+        
+        if (!val) {
+            autocompleteContainer.style.display = 'none';
+            return;
+        }
+        
+        // Filter locations that match the input
+        const matchingLocations = uniqueLocations.filter(location => 
+            location.toLowerCase().startsWith(val)
+        ).slice(0, 10); // Limit to 10 suggestions
+        
+        if (matchingLocations.length > 0) {
+            autocompleteContainer.style.display = 'block';
+            
+            // Add matching locations to dropdown
+            matchingLocations.forEach(location => {
+                const item = document.createElement('div');
+                item.innerHTML = `<strong>${location.substring(0, val.length)}</strong>${location.substring(val.length)}`;
+                item.style.padding = '10px';
+                item.style.cursor = 'pointer';
+                item.style.borderBottom = '1px solid #ddd';
+                
+                // Add hover effect
+                item.addEventListener('mouseover', function() {
+                    this.style.backgroundColor = '#e9e9e9';
+                });
+                item.addEventListener('mouseout', function() {
+                    this.style.backgroundColor = 'white';
+                });
+                
+                // Set input value when clicked
+                item.addEventListener('click', function() {
+                    searchInput.value = location;
+                    autocompleteContainer.style.display = 'none';
+                    // Automatically search when a location is selected
+                    locationSearchTerm = location;
+                    filterDataByLocation(locationSearchTerm);
+                });
+                
+                autocompleteContainer.appendChild(item);
+            });
+        } else {
+            autocompleteContainer.style.display = 'none';
+        }
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target !== searchInput) {
+            autocompleteContainer.style.display = 'none';
+        }
+    });
     
     // Search when button is clicked
     searchButton.addEventListener('click', () => {
@@ -969,6 +1038,7 @@ function setupLocationSearch() {
             locationSearchTerm = searchInput.value.trim();
             if (locationSearchTerm) {
                 filterDataByLocation(locationSearchTerm);
+                autocompleteContainer.style.display = 'none';
             }
         }
     });
@@ -978,8 +1048,23 @@ function setupLocationSearch() {
         searchInput.value = '';
         locationSearchTerm = '';
         resultsContainer.style.display = 'none';
+        autocompleteContainer.style.display = 'none';
         updateAnnualChartForAllLocations();
     });
+}
+
+// Get unique locations from the dataset
+function getUniqueLocations() {
+    const locations = new Set();
+    
+    dashboardData.table_data.forEach(protest => {
+        if (protest.locality && protest.state) {
+            const location = `${protest.locality}, ${protest.state}`;
+            locations.add(location);
+        }
+    });
+    
+    return Array.from(locations).sort();
 }
 
 // Filter data by location and update the annual chart
