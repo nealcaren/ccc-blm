@@ -229,8 +229,8 @@ def process_data():
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
         
         # Print the top 10 highest arrest values for verification
-        top_arrests = df.nlargest(10, 'arrests')[['date', 'locality', 'state', 'arrests']]
-        print(f"Top 10 arrest events:\n{top_arrests}")
+        top_arrests = df.nlargest(50, 'arrests')[['date', 'locality', 'state', 'arrests']]
+        print(f"Top 50 arrest events:\n{top_arrests}")
         
         total_arrests = int(df['arrests'].sum())
         print(f"Total arrests calculated: {total_arrests}")
