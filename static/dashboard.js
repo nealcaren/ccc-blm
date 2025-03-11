@@ -1004,6 +1004,11 @@ function updateAnnualChart() {
     annualChart.data.datasets[0].backgroundColor = backgroundColor;
     annualChart.data.datasets[0].borderColor = backgroundColor;
     
+    // If we have a location filter active, reapply it
+    if (locationSearchTerm && locationFilteredData.length > 0) {
+        updateAnnualChartForLocation(locationSearchTerm.toLowerCase());
+    }
+    
     annualChart.update();
 }
 
