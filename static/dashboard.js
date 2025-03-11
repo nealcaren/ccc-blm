@@ -263,7 +263,7 @@ function updatePhaseChart() {
     // Prepare data based on current phase
     if (currentPhase === 1) {
         // Phase 1: Beginning until July 2014
-        titleElement.textContent = '2012 to the Summer of 2014';
+        titleElement.textContent = '2012 to 2014: Building Tension';
         descriptionElement.textContent = `In the early 2010s, protests against police brutality were often small and focused on local incidents of brutality.`;
         
         // Use the data field directly from our processed data
@@ -274,7 +274,7 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 2) {
         // Phase 2: August 2014 until December 2016
-        titleElement.textContent = 'The Emergence of Black Lives Matter: August 2014 until December 2016';
+        titleElement.textContent = 'The Birth of Modern Movement';
         descriptionElement.textContent = `From 2014 to 2016, the Black Lives Matter movement established a sustained period of nationwide protests, initially sparked by the deaths of Eric Garner and Michael Brown and later reignited following the killings of Alton Sterling and Philando Castile, in response to police brutality and racial injustice.`;
         
         // Combine phase 1 and 2 data to show the progression
@@ -314,7 +314,7 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 3) {
         // Phase 3: January 2017 until April 2020
-        titleElement.textContent = 'January 2017 until April 2020';
+        titleElement.textContent = 'The Trump Era';
         descriptionElement.textContent = `While the election of President Trump catalyzed a massive increase in protests nationwide, relatively few demonstrations focused specifically on police brutality, marking a temporary shift in the primary focus of public activism before the next wave of racial justice protests.`;
         
         // Combine phase 1, 2, and 3 data to show the progression
@@ -359,7 +359,7 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 4) {
         // Phase 4: Floyd protest surge (May-Oct 2020)
-        titleElement.textContent = 'The George Floyd Protests: May-October 2020';
+        titleElement.textContent = 'BLM Summer';
         descriptionElement.textContent = `In 2020, the killing of George Floyd by Minneapolis police officers ignited unprecedented nationwide protests against police brutality and racial injustice, mobilizing millions of Americans across all 50 states in what became the largest mass demonstration movement in U.S. history.`;
         
         // Combine all previous phases with phase 4 data to show the dramatic increase
@@ -409,7 +409,7 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 5) {
         // Phase 5: All data with color coding by period
-        titleElement.textContent = 'November 2020 to Present';
+        titleElement.textContent = 'Ongoing Advocacy';
         descriptionElement.textContent = `After the initial surge of protests following George Floyd's killing, the volume of demonstrations gradually declined through 2021, yet remained at significantly higher levels than pre-2020 periods.`;
         
         // Combine all phase data to show the complete timeline
