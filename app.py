@@ -5,9 +5,28 @@ import os
 
 def process_data():
     """Process the CSV data and create a JSON file for the dashboard"""
-    # Read the CSV file
-    csv_path = 'police_brutality_protests.csv'
-    df = pd.read_csv(csv_path, low_memory=False)
+    # Read both CSV files
+    csv_path1 = 'police_brutality_protests.csv'
+    csv_path2 = 'police_brutality_protests_newsbank_prepped.csv'
+    
+    # Check if both files exist
+    df1 = pd.read_csv(csv_path1, low_memory=False) if os.path.exists(csv_path1) else pd.DataFrame()
+    df2 = pd.read_csv(csv_path2, low_memory=False) if os.path.exists(csv_path2) else pd.DataFrame()
+    
+    # Combine the dataframes
+    if df1.empty and df2.empty:
+        raise FileNotFoundError("No data files found")
+    elif df1.empty:
+        df = df2
+    elif df2.empty:
+        df = df1
+    else:
+        # Ensure both dataframes have the same columns before concatenating
+        common_columns = list(set(df1.columns).intersection(set(df2.columns)))
+        df = pd.concat([df1[common_columns], df2[common_columns]], ignore_index=True)
+        
+        # Remove duplicates if any
+        df = df.drop_duplicates()
     
     # Convert date to datetime
     df['date'] = pd.to_datetime(df['date'])
@@ -94,4 +113,8 @@ def process_data():
 if __name__ == "__main__":
     # Create static directory if it doesn't exist
     os.makedirs('static', exist_ok=True)
-    process_data()
+    try:
+        data = process_data()
+        print(f"Date range: {data['date_range']['start']} to {data['date_range']['end']}")
+    except Exception as e:
+        print(f"Error processing data: {e}")
