@@ -78,19 +78,7 @@ function calculatePhaseTotals() {
     let cumulativeProtests = 0;
     let cumulativeProtesters = 0;
     
-    // For arrests, distribute them proportionally to protest counts
-    // This gives a more realistic distribution than even distribution
-    const totalArrests = dashboardData.total_arrests || 0;
-    console.log('Total arrests from data:', totalArrests);
-    
-    // Calculate the total number of protests across all phases to determine proportions
-    let totalProtests = 0;
-    phases.forEach(phase => {
-        dashboardData[phase].forEach(item => {
-            totalProtests += item.count || 0;
-        });
-    });
-    
+    // For arrests, we'll use the actual arrest data from each phase
     // Track cumulative arrests and locations for phase totals
     let cumulativeArrests = 0;
     let cumulativeLocations = new Set(); // Use a Set to track unique locations across phases
@@ -116,15 +104,16 @@ function calculatePhaseTotals() {
         cumulativeProtests += phaseProtests;
         cumulativeProtesters += phaseProtesters;
         
-        // Calculate phase-specific arrests based on proportion of protests
-        let phaseProtestCount = 0;
+        // Calculate phase-specific arrests by summing the actual arrest data
+        let phaseArrests = 0;
         phaseData.forEach(item => {
-            phaseProtestCount += item.count || 0;
+            phaseArrests += item.arrests || 0;
         });
         
-        // Calculate this phase's share of arrests based on its proportion of total protests
-        const phaseArrestShare = totalArrests * (phaseProtestCount / totalProtests);
-        cumulativeArrests += phaseArrestShare;
+        // Add to cumulative arrests
+        cumulativeArrests += phaseArrests;
+        
+        console.log(`Phase ${index + 1} arrests: ${phaseArrests}, cumulative: ${cumulativeArrests}`);
         
         // Get the sum of unique locations for this phase
         let phaseLocationCount = 0;
