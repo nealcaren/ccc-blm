@@ -14,3 +14,6 @@ __pycache__/
 .aider.chat.history.md
 .aider.chat.history.md
 .aider.input.history
+*.db-wal
+*.history
+.aider.chat.history.md
