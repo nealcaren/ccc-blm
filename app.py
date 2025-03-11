@@ -127,7 +127,7 @@ def process_data():
     
     # Write to JSON file
     with open('static/data.json', 'w') as f:
-        json.dump(output_data, f)
+        json.dump(output_data, f, default=str)  # Use default=str to handle any non-serializable objects
     
     print(f"Data processed successfully. {len(df)} protests analyzed.")
     return output_data

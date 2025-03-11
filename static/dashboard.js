@@ -19,7 +19,12 @@ async function loadData() {
             throw new Error('Failed to load data');
         }
         
-        dashboardData = await response.json();
+        try {
+            dashboardData = await response.json();
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            throw new Error('Failed to parse data file. The JSON may be malformed.');
+        }
         
         // Initialize filtered data
         filteredTableData = dashboardData.table_data;
