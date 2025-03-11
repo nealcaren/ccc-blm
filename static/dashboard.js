@@ -264,8 +264,7 @@ function updatePhaseChart() {
     if (currentPhase === 1) {
         // Phase 1: Beginning until July 2014
         titleElement.textContent = '2012 to the Summer of 2014';
-        const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
-        descriptionElement.textContent = `Monthly ${countType} from the beginning until July 2014.`;
+        descriptionElement.textContent = `In the early 2010s, protests against police brutality were often small and focused on local incidents of brutality.`;
         
         // Use the data field directly from our processed data
         data = dashboardData.phase1_monthly.map(item => item[dataField] || 0);
@@ -276,8 +275,7 @@ function updatePhaseChart() {
     } else if (currentPhase === 2) {
         // Phase 2: August 2014 until December 2016
         titleElement.textContent = 'The Emergence of Black Lives Matter: August 2014 until December 2016';
-        const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
-        descriptionElement.textContent = `Monthly ${countType} through December 2016, including earlier data.`;
+        descriptionElement.textContent = `From 2014 to 2016, the Black Lives Matter movement established a sustained period of nationwide protests, initially sparked by the deaths of Eric Garner and Michael Brown and later reignited following the killings of Alton Sterling and Philando Castile, in response to police brutality and racial injustice.`;
         
         // Combine phase 1 and 2 data to show the progression
         const phase1Data = dashboardData.phase1_monthly;
@@ -316,9 +314,8 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 3) {
         // Phase 3: January 2017 until April 2020
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 3';
-        const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
-        descriptionElement.textContent = `Monthly ${countType} through April 2020, including earlier data.`;
+        titleElement.textContent = 'January 2017 until April 2020';
+        descriptionElement.textContent = `While the election of President Trump catalyzed a massive increase in protests nationwide, relatively few demonstrations focused specifically on police brutality, marking a temporary shift in the primary focus of public activism before the next wave of racial justice protests.`;
         
         // Combine phase 1, 2, and 3 data to show the progression
         const phase1Data = dashboardData.phase1_monthly;
@@ -362,9 +359,8 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 4) {
         // Phase 4: Floyd protest surge (May-Oct 2020)
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 4';
-        const countType = currentPhaseDataType === 'count' ? 'protests' : 'protesters';
-        descriptionElement.textContent = `The surge in ${countType} following George Floyd's death (May-October 2020), with historical context.`;
+        titleElement.textContent = 'The George Floyd Protests: May-October 2020';
+        descriptionElement.textContent = `In 2020, the killing of George Floyd by Minneapolis police officers ignited unprecedented nationwide protests against police brutality and racial injustice, mobilizing millions of Americans across all 50 states in what became the largest mass demonstration movement in U.S. history.`;
         
         // Combine all previous phases with phase 4 data to show the dramatic increase
         const phase1Data = dashboardData.phase1_monthly;
@@ -413,9 +409,8 @@ function updatePhaseChart() {
         
     } else if (currentPhase === 5) {
         // Phase 5: All data with color coding by period
-        titleElement.textContent = 'The Story of Police Brutality Protests: Phase 5';
-        const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
-        descriptionElement.textContent = `Monthly ${countType} across all periods, color-coded by phase.`;
+        titleElement.textContent = 'November 2020 to Present';
+        descriptionElement.textContent = `After the initial surge of protests following George Floyd's killing, the volume of demonstrations gradually declined through 2021, yet remained at significantly higher levels than pre-2020 periods.`;
         
         // Combine all phase data to show the complete timeline
         const phaseData = {
