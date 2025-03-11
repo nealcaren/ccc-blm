@@ -59,22 +59,28 @@
         
         <!-- Summary Stats -->
         <div class="row mb-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card stats-card">
                     <div class="stats-number" id="total-protests">--</div>
                     <div class="stats-label">Total Protests</div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card stats-card">
                     <div class="stats-number" id="total-protesters">--</div>
                     <div class="stats-label">Total Protesters</div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card stats-card">
                     <div class="stats-number" id="total-arrests">--</div>
                     <div class="stats-label">Total Arrests</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="stats-number" id="total-locations">--</div>
+                    <div class="stats-label">Total Locations</div>
                 </div>
             </div>
         </div>
@@ -92,6 +98,8 @@
                             <label class="btn btn-outline-secondary" for="phaseDataType2">Protesters</label>
                             <input type="radio" class="btn-check" name="phaseDataType" id="phaseDataType3" value="locations">
                             <label class="btn btn-outline-secondary" for="phaseDataType3">Locations</label>
+                            <input type="radio" class="btn-check" name="phaseDataType" id="phaseDataType4" value="arrests">
+                            <label class="btn btn-outline-secondary" for="phaseDataType4">Arrests</label>
                         </div>
                         <button id="prev-phase" class="btn btn-sm btn-outline-secondary" disabled>Previous</button>
                         <button id="next-phase" class="btn btn-sm btn-outline-primary">Next</button>

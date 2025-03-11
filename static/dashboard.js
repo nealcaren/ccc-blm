@@ -13,7 +13,8 @@ let searchTerm = '';
 let phaseTotals = {
     protests: {},
     protesters: {},
-    arrests: {}
+    arrests: {},
+    locations: {}
 };
 
 // Fetch and load the data
@@ -90,17 +91,25 @@ function calculatePhaseTotals() {
         });
     });
     
-    // Track cumulative arrests for phase totals
+    // Track cumulative arrests and locations for phase totals
     let cumulativeArrests = 0;
+    let cumulativeLocations = new Set(); // Use a Set to track unique locations across phases
     
     phases.forEach((phase, index) => {
         const phaseData = dashboardData[phase];
         let phaseProtests = 0;
         let phaseProtesters = 0;
+        let phaseLocations = new Set(); // Track unique locations in this phase
         
         phaseData.forEach(item => {
             phaseProtests += item.count || 0;
             phaseProtesters += item.size || 0;
+            
+            // Add locations from this phase to both phase-specific and cumulative sets
+            if (item.locations) {
+                phaseLocations.add(item.locations);
+                cumulativeLocations.add(item.locations);
+            }
         });
         
         cumulativeProtests += phaseProtests;
@@ -120,6 +129,7 @@ function calculatePhaseTotals() {
         phaseTotals.protests[index + 1] = cumulativeProtests;
         phaseTotals.protesters[index + 1] = cumulativeProtesters;
         phaseTotals.arrests[index + 1] = Math.round(cumulativeArrests);
+        phaseTotals.locations[index + 1] = cumulativeLocations.size;
     });
     
     console.log('Phase totals calculated:', phaseTotals);
@@ -131,16 +141,19 @@ function updateSummaryStats() {
     const protestTotal = phaseTotals.protests[currentPhase] || 0;
     const protesterTotal = phaseTotals.protesters[currentPhase] || 0;
     const arrestTotal = phaseTotals.arrests[currentPhase] || 0;
+    const locationTotal = phaseTotals.locations[currentPhase] || 0;
     
     document.getElementById('total-protests').textContent = protestTotal.toLocaleString();
     document.getElementById('total-protesters').textContent = protesterTotal.toLocaleString();
     document.getElementById('total-arrests').textContent = arrestTotal.toLocaleString();
+    document.getElementById('total-locations').textContent = locationTotal.toLocaleString();
     
     // Log for debugging
     console.log('Updated summary stats:', {
         protests: protestTotal,
         protesters: protesterTotal,
         arrests: arrestTotal,
+        locations: locationTotal,
         rawArrestsValue: dashboardData.total_arrests
     });
 }
@@ -342,9 +355,12 @@ function updatePhaseChart() {
     } else if (currentPhaseDataType === 'protesters') {
         dataField = 'size';
         dataLabel = 'Total Protesters';
-    } else {
+    } else if (currentPhaseDataType === 'locations') {
         dataField = 'locations';
         dataLabel = 'Unique Locations';
+    } else if (currentPhaseDataType === 'arrests') {
+        dataField = 'arrests';
+        dataLabel = 'Total Arrests';
     }
     
     console.log('Using data field:', dataField);

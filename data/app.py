@@ -61,11 +61,25 @@ def process_data():
     phase1_data['locality'] = phase1_data['locality'].astype(str)
     phase1_data['state'] = phase1_data['state'].astype(str)
     phase1_data['location'] = phase1_data['locality'] + ', ' + phase1_data['state']
-    phase1_monthly = phase1_data.groupby('month').agg(
-        count=('date', 'size'),
-        size=('size_mean_imputed', 'sum'),
-        locations=('location', lambda x: len(set(x)))  # Count unique locations
-    ).reset_index()
+    
+    # Calculate arrests if the column exists
+    if 'arrests' in phase1_data.columns:
+        phase1_data['arrests'] = pd.to_numeric(phase1_data['arrests'], errors='coerce').fillna(0)
+        phase1_monthly = phase1_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            arrests=('arrests', 'sum')  # Sum arrests by month
+        ).reset_index()
+    else:
+        phase1_monthly = phase1_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x)))  # Count unique locations
+        ).reset_index()
+        # Add a zero arrests column
+        phase1_monthly['arrests'] = 0
+    
     # Replace any NaN values with None
     phase1_monthly = phase1_monthly.where(pd.notnull(phase1_monthly), None)
     
@@ -75,11 +89,25 @@ def process_data():
     phase2_data['locality'] = phase2_data['locality'].astype(str)
     phase2_data['state'] = phase2_data['state'].astype(str)
     phase2_data['location'] = phase2_data['locality'] + ', ' + phase2_data['state']
-    phase2_monthly = phase2_data.groupby('month').agg(
-        count=('date', 'size'),
-        size=('size_mean_imputed', 'sum'),
-        locations=('location', lambda x: len(set(x)))  # Count unique locations
-    ).reset_index()
+    
+    # Calculate arrests if the column exists
+    if 'arrests' in phase2_data.columns:
+        phase2_data['arrests'] = pd.to_numeric(phase2_data['arrests'], errors='coerce').fillna(0)
+        phase2_monthly = phase2_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            arrests=('arrests', 'sum')  # Sum arrests by month
+        ).reset_index()
+    else:
+        phase2_monthly = phase2_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x)))  # Count unique locations
+        ).reset_index()
+        # Add a zero arrests column
+        phase2_monthly['arrests'] = 0
+    
     # Replace any NaN values with None
     phase2_monthly = phase2_monthly.where(pd.notnull(phase2_monthly), None)
     
@@ -89,11 +117,25 @@ def process_data():
     phase3_data['locality'] = phase3_data['locality'].astype(str)
     phase3_data['state'] = phase3_data['state'].astype(str)
     phase3_data['location'] = phase3_data['locality'] + ', ' + phase3_data['state']
-    phase3_monthly = phase3_data.groupby('month').agg(
-        count=('date', 'size'),
-        size=('size_mean_imputed', 'sum'),
-        locations=('location', lambda x: len(set(x)))  # Count unique locations
-    ).reset_index()
+    
+    # Calculate arrests if the column exists
+    if 'arrests' in phase3_data.columns:
+        phase3_data['arrests'] = pd.to_numeric(phase3_data['arrests'], errors='coerce').fillna(0)
+        phase3_monthly = phase3_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            arrests=('arrests', 'sum')  # Sum arrests by month
+        ).reset_index()
+    else:
+        phase3_monthly = phase3_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x)))  # Count unique locations
+        ).reset_index()
+        # Add a zero arrests column
+        phase3_monthly['arrests'] = 0
+    
     # Replace any NaN values with None
     phase3_monthly = phase3_monthly.where(pd.notnull(phase3_monthly), None)
     
@@ -103,11 +145,25 @@ def process_data():
     phase4_data['locality'] = phase4_data['locality'].astype(str)
     phase4_data['state'] = phase4_data['state'].astype(str)
     phase4_data['location'] = phase4_data['locality'] + ', ' + phase4_data['state']
-    phase4_monthly = phase4_data.groupby('month').agg(
-        count=('date', 'size'),
-        size=('size_mean_imputed', 'sum'),
-        locations=('location', lambda x: len(set(x)))  # Count unique locations
-    ).reset_index()
+    
+    # Calculate arrests if the column exists
+    if 'arrests' in phase4_data.columns:
+        phase4_data['arrests'] = pd.to_numeric(phase4_data['arrests'], errors='coerce').fillna(0)
+        phase4_monthly = phase4_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            arrests=('arrests', 'sum')  # Sum arrests by month
+        ).reset_index()
+    else:
+        phase4_monthly = phase4_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x)))  # Count unique locations
+        ).reset_index()
+        # Add a zero arrests column
+        phase4_monthly['arrests'] = 0
+    
     # Replace any NaN values with None
     phase4_monthly = phase4_monthly.where(pd.notnull(phase4_monthly), None)
     
@@ -117,11 +173,25 @@ def process_data():
     phase5_data['locality'] = phase5_data['locality'].astype(str)
     phase5_data['state'] = phase5_data['state'].astype(str)
     phase5_data['location'] = phase5_data['locality'] + ', ' + phase5_data['state']
-    phase5_monthly = phase5_data.groupby('month').agg(
-        count=('date', 'size'),
-        size=('size_mean_imputed', 'sum'),
-        locations=('location', lambda x: len(set(x)))  # Count unique locations
-    ).reset_index()
+    
+    # Calculate arrests if the column exists
+    if 'arrests' in phase5_data.columns:
+        phase5_data['arrests'] = pd.to_numeric(phase5_data['arrests'], errors='coerce').fillna(0)
+        phase5_monthly = phase5_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x))),  # Count unique locations
+            arrests=('arrests', 'sum')  # Sum arrests by month
+        ).reset_index()
+    else:
+        phase5_monthly = phase5_data.groupby('month').agg(
+            count=('date', 'size'),
+            size=('size_mean_imputed', 'sum'),
+            locations=('location', lambda x: len(set(x)))  # Count unique locations
+        ).reset_index()
+        # Add a zero arrests column
+        phase5_monthly['arrests'] = 0
+    
     # Replace any NaN values with None
     phase5_monthly = phase5_monthly.where(pd.notnull(phase5_monthly), None)
     
