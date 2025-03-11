@@ -687,7 +687,8 @@ function processAnnualData() {
         years: [],
         protests: {},
         protesters: {},
-        arrests: {}
+        arrests: {},
+        locationArrests: {} // New object to hold arrests by location and year
     };
     
     // Extract years from the data
@@ -707,6 +708,7 @@ function processAnnualData() {
         annualData.protests[year] = 0;
         annualData.protesters[year] = 0;
         annualData.arrests[year] = 0;
+        annualData.locationArrests[year] = {}; // Initialize nested object for each year
     });
     
     // Process weekly data to get annual totals
@@ -722,20 +724,19 @@ function processAnnualData() {
     });
     
     
-    // Process arrests data - we need to go through the phase data
-    const allPhaseData = [
-        ...dashboardData.phase1_monthly,
-        ...dashboardData.phase2_monthly,
-        ...dashboardData.phase3_monthly,
-        ...dashboardData.phase4_monthly,
-        ...dashboardData.phase5_monthly
-    ];
-    
-    allPhaseData.forEach(month => {
-        if (month.month) {
-            const year = month.month.substring(0, 4);
+    // Process arrests data from table_data
+    dashboardData.table_data.forEach(protest => {
+        if (protest.date && protest.arrests) {
+            const year = protest.date.substring(0, 4);
             if (annualData.years.includes(year)) {
-                annualData.arrests[year] += month.arrests || 0;
+                annualData.arrests[year] += protest.arrests || 0;
+                if (protest.locality && protest.state) {
+                    const location = `${protest.locality}, ${protest.state}`;
+                    if (!annualData.locationArrests[year][location]) {
+                        annualData.locationArrests[year][location] = 0;
+                    }
+                    annualData.locationArrests[year][location] += protest.arrests;
+                }
             }
         }
     });
@@ -1024,7 +1025,14 @@ function updateAnnualChartForLocation(location) {
             data = annualData.years.map(year => locationAnnualData.protesters[year]);
             break;
         case 'arrests':
-            data = annualData.years.map(year => 0); // We don't have arrest data by location
+            // Get arrest data for the location
+            const locationKey = `${locationFilteredData[0]?.locality}, ${locationFilteredData[0]?.state}`;
+            data = annualData.years.map(year => {
+                if (annualData.locationArrests[year] && annualData.locationArrests[year][locationKey]) {
+                    return annualData.locationArrests[year][locationKey];
+                }
+                return 0;
+            });
             break;
     }
     
