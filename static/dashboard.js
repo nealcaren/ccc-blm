@@ -572,8 +572,7 @@ function updatePhaseChart() {
                     label: dataLabel,
                     data: data,
                     backgroundColor: backgroundColors,
-                    borderColor: currentPhase === 3 ? '#7570b3' : 
-                               (currentPhase === 2 ? '#d95f02' : '#1b9e77'),
+                    borderColor: backgroundColors, // Make border color match the fill color
                     borderWidth: 1,
                     pointRadius: chartType === 'line' ? 0 : undefined,
                     pointHitRadius: chartType === 'line' ? 10 : undefined,
