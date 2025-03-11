@@ -571,8 +571,8 @@ function updatePhaseChart() {
                     label: dataLabel,
                     data: data,
                     backgroundColor: backgroundColors,
-                    borderColor: backgroundColors, // Make border color match the fill color
-                    borderWidth: 1,
+                    borderColor: backgroundColors,
+                    borderWidth: 0, // Remove the border completely
                     pointRadius: chartType === 'line' ? 0 : undefined,
                     pointHitRadius: chartType === 'line' ? 10 : undefined,
                     tension: chartType === 'line' ? 0.1 : undefined
