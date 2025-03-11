@@ -40,6 +40,21 @@ def process_data():
     
     # Filter to keep only US states
     df = df[df['state'].isin(us_states)]
+    
+    # Drop invalid events that should be completely excluded
+    mask_drop = (
+        ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC')) |
+        ((df['date'] == '2012-03-17') & (df['locality'] == 'New York') & (df['state'] == 'NY')) |
+        ((df['date'] == '2012-03-21') & (df['locality'] == 'New York') & (df['state'] == 'NY')) |
+        ((df['date'] == '2012-03-24') & (df['locality'] == 'New York') & (df['state'] == 'NY'))
+    )
+    
+    # Print the events being dropped
+    dropped_events = df[mask_drop][['date', 'locality', 'state', 'arrests']]
+    print(f"Dropping these invalid events:\n{dropped_events}")
+    
+    # Drop the invalid events
+    df = df[~mask_drop]
 
     # Zero out specific arrest events that should be excluded
     mask_zero_out = (
