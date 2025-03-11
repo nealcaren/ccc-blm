@@ -113,9 +113,25 @@ function calculatePhaseTotals() {
         // Add to cumulative arrests
         cumulativeArrests += phaseArrests;
         
-        console.log(`Phase ${index + 1} arrests: ${phaseArrests}, cumulative: ${cumulativeArrests}`);
+        // Round to whole number for display
+        const roundedPhaseArrests = Math.round(phaseArrests);
+        const roundedCumulativeArrests = Math.round(cumulativeArrests);
         
-        // Get the sum of unique locations for this phase
+        console.log(`Phase ${index + 1} arrests: ${roundedPhaseArrests}, cumulative: ${roundedCumulativeArrests}`);
+        
+        // Log the first few months with arrest data for verification
+        const arrestSamples = phaseData
+            .filter(item => item.arrests && item.arrests > 0)
+            .slice(0, 3)
+            .map(item => `${item.month}: ${item.arrests}`);
+        
+        if (arrestSamples.length > 0) {
+            console.log(`Phase ${index + 1} arrest samples: ${arrestSamples.join(', ')}`);
+        }
+        
+        // For locations, we need a better approximation
+        // We'll use a percentage of the total unique locations based on protest counts
+        // This gives a more realistic distribution than simply adding monthly counts
         let phaseLocationCount = 0;
         phaseData.forEach(item => {
             phaseLocationCount += item.locations || 0;
@@ -126,13 +142,21 @@ function calculatePhaseTotals() {
         phaseTotals.protesters[index + 1] = cumulativeProtesters;
         phaseTotals.arrests[index + 1] = Math.round(cumulativeArrests);
         
-        // For locations, we'll use the sum of the monthly unique locations
-        // This isn't perfect (there could be overlap between months) but it's a reasonable approximation
+        // For locations, use a more reasonable estimate
+        // We'll assume about 20% overlap between months within a phase
+        const uniqueLocationsEstimate = Math.round(phaseLocationCount * 0.8);
+        
         if (index === 0) {
-            phaseTotals.locations[index + 1] = phaseLocationCount;
+            phaseTotals.locations[index + 1] = uniqueLocationsEstimate;
         } else {
-            phaseTotals.locations[index + 1] = phaseTotals.locations[index] + phaseLocationCount;
+            // Assume some overlap between phases too (about 10%)
+            const previousPhaseLocations = phaseTotals.locations[index];
+            const combinedLocations = previousPhaseLocations + uniqueLocationsEstimate;
+            // Reduce by estimated overlap
+            phaseTotals.locations[index + 1] = Math.round(combinedLocations * 0.9);
         }
+        
+        console.log(`Phase ${index + 1} locations: Raw count=${phaseLocationCount}, Estimated unique=${uniqueLocationsEstimate}, Cumulative=${phaseTotals.locations[index + 1]}`);
     });
     
     console.log('Phase totals calculated:', phaseTotals);
