@@ -60,6 +60,7 @@ def process_data():
     # Zero out specific arrest events that should be excluded
     mask_zero_out = (
         ((df['date'] == '2015-04-01') & (df['locality'] == 'Baltimore') & (df['state'] == 'MD')) |
+        ((df['date'] == '2015-05-01') & (df['locality'] == 'Baltimore') & (df['state'] == 'MD')) |
         ((df['date'] == '2020-05-29') & (df['locality'] == 'Omaha') & (df['state'] == 'NE')) |
         ((df['date'] == '2016-07-05') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
         ((df['date'] == '2016-07-07') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
