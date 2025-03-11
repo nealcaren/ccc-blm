@@ -4,3 +4,6 @@ __pycache__/
 .aider.chat.history.md
 .aider.input.history
 .aider*
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v4/cache.db-wal
