@@ -40,6 +40,24 @@ def process_data():
     
     # Filter to keep only US states
     df = df[df['state'].isin(us_states)]
+
+    # Zero out specific arrest events that should be excluded
+    mask_zero_out = (
+        ((df['date'] == '2015-04-01') & (df['locality'] == 'Baltimore') & (df['state'] == 'MD')) |
+        ((df['date'] == '2020-05-29') & (df['locality'] == 'Omaha') & (df['state'] == 'NE')) |
+        ((df['date'] == '2016-07-05') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
+        ((df['date'] == '2016-07-07') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
+        ((df['date'] == '2016-07-13') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
+        ((df['date'] == '2014-11-26') & (df['locality'] == 'Los Angeles') & (df['state'] == 'CA')) |
+        ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC'))
+    )
+    
+    # Print the events being zeroed out
+    zeroed_events = df[mask_zero_out][['date', 'locality', 'state', 'arrests']]
+    print(f"Zeroing out these arrest events:\n{zeroed_events}")
+    
+    # Zero out the arrests for these events
+    df.loc[mask_zero_out, 'arrests'] = 0
     
     # Convert date to datetime
     df['date'] = pd.to_datetime(df['date'])
@@ -239,25 +257,6 @@ def process_data():
         
         # Convert arrests to numeric first, then check for non-zero values
         df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
-        
-        # Filter out specific arrest events that should be zeroed out
-        # Create a mask for the events to zero out
-        mask_zero_out = (
-            ((df['date'] == '2015-04-01') & (df['locality'] == 'Baltimore') & (df['state'] == 'MD')) |
-            ((df['date'] == '2020-05-29') & (df['locality'] == 'Omaha') & (df['state'] == 'NE')) |
-            ((df['date'] == '2016-07-05') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
-            ((df['date'] == '2016-07-07') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
-            ((df['date'] == '2016-07-13') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
-            ((df['date'] == '2014-11-26') & (df['locality'] == 'Los Angeles') & (df['state'] == 'CA')) |
-            ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC'))
-        )
-        
-        # Print the events being zeroed out
-        zeroed_events = df[mask_zero_out][['date', 'locality', 'state', 'arrests']]
-        print(f"Zeroing out these arrest events:\n{zeroed_events}")
-        
-        # Zero out the arrests for these events
-        df.loc[mask_zero_out, 'arrests'] = 0
         
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
         
