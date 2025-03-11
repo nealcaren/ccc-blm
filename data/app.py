@@ -148,9 +148,21 @@ def process_data():
     total_protesters = int(df['size_mean_imputed'].sum())
     
     # Calculate total arrests
-    # Convert arrests to numeric, coercing errors to NaN, then fill NaN with 0
-    df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
-    total_arrests = int(df['arrests'].sum())
+    # Check if arrests column exists
+    if 'arrests' in df.columns:
+        # Print some debug info about the arrests column
+        print(f"Arrests column found. Sample values: {df['arrests'].head(10).tolist()}")
+        print(f"Arrests column type: {df['arrests'].dtype}")
+        print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
+        
+        # Convert arrests to numeric, coercing errors to NaN, then fill NaN with 0
+        df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
+        total_arrests = int(df['arrests'].sum())
+        print(f"Total arrests calculated: {total_arrests}")
+    else:
+        print("Warning: 'arrests' column not found in the dataset")
+        # If no arrests column, set to 0
+        total_arrests = 0
     
     # Calculate daily protester counts
     daily_protester_counts = df.groupby('date').agg(
