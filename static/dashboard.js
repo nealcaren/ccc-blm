@@ -559,7 +559,7 @@ function updateTable() {
     
     if (filteredTableData.length === 0) {
         const row = document.createElement('tr');
-        row.innerHTML = '<td colspan="6" class="text-center">No matching protests found</td>';
+        row.innerHTML = '<td colspan="7" class="text-center">No matching protests found</td>';
         tableBody.appendChild(row);
     } else {
         // Add data rows
@@ -574,6 +574,7 @@ function updateTable() {
                 <td>${protest.type}</td>
                 <td>${protest.claims}</td>
                 <td>${protest.size_mean === 11 ? '' : protest.size_mean}</td>
+                <td>${protest.arrests || ''}</td>
             `;
             
             tableBody.appendChild(row);
@@ -1062,7 +1063,7 @@ function updateLocationResultsTable() {
     
     if (locationFilteredData.length === 0) {
         const row = document.createElement('tr');
-        row.innerHTML = '<td colspan="6" class="text-center">No matching protests found</td>';
+        row.innerHTML = '<td colspan="7" class="text-center">No matching protests found</td>';
         tableBody.appendChild(row);
     } else {
         // Add data rows

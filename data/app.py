@@ -197,7 +197,7 @@ def process_data():
     
     # Create a sample of the data for the table view
     # Select relevant columns
-    table_data = df[['date', 'locality', 'state', 'type', 'claims', 'size_mean']].copy()
+    table_data = df[['date', 'locality', 'state', 'type', 'claims', 'size_mean', 'arrests']].copy()
     
     # Format date
     table_data['date'] = table_data['date'].dt.strftime('%Y-%m-%d')
