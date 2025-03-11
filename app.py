@@ -119,9 +119,13 @@ def process_data():
     # Format date
     table_data['date'] = table_data['date'].dt.strftime('%Y-%m-%d')
     
-    # Format size values - leave missing values as empty strings for display
+    # Format size values - leave missing values as None for display
     # Convert NaN to None (which will be serialized as null in JSON)
     table_data['size_mean'] = table_data['size_mean'].apply(lambda x: None if pd.isna(x) or x == 11 else x)
+    
+    # Make sure all columns have NaN values replaced with None
+    for col in table_data.columns:
+        table_data[col] = table_data[col].apply(lambda x: None if pd.isna(x) else x)
     
     # Convert to records - include all protests
     table_records = table_data.to_dict('records')
@@ -170,8 +174,27 @@ def process_data():
                     return None
                 return super().default(obj)
         
+        # Pre-process the output data to replace NaN values with None
+        def replace_nan_with_none(obj):
+            import numpy as np
+            import pandas as pd
+            
+            if isinstance(obj, dict):
+                return {k: replace_nan_with_none(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [replace_nan_with_none(item) for item in obj]
+            elif isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj)):
+                return None
+            elif pd.isna(obj):
+                return None
+            else:
+                return obj
+        
+        # Clean the data before serializing
+        cleaned_data = replace_nan_with_none(output_data)
+        
         # Convert any problematic values and ensure proper JSON formatting
-        json.dump(output_data, f, cls=CustomJSONEncoder, default=str, ensure_ascii=False, indent=2)
+        json.dump(cleaned_data, f, cls=CustomJSONEncoder, default=str, ensure_ascii=False, indent=2)
     
     print(f"Data processed successfully. {len(df)} protests analyzed.")
     return output_data
