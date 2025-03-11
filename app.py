@@ -88,8 +88,8 @@ def process_data():
     # Format date
     table_data['date'] = table_data['date'].dt.strftime('%Y-%m-%d')
     
-    # Handle missing values - impute unknown sizes with 11
-    table_data['size_mean'] = table_data['size_mean'].fillna(11)
+    # Format size values - leave missing values as empty strings for display
+    table_data['size_mean'] = table_data['size_mean'].apply(lambda x: '' if pd.isna(x) or x == 11 else x)
     
     # Convert to records - include all protests
     table_records = table_data.to_dict('records')

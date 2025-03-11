@@ -565,7 +565,7 @@ function updateTable() {
                 <td>${protest.state}</td>
                 <td>${protest.type}</td>
                 <td>${protest.claims}</td>
-                <td>${protest.size_mean}</td>
+                <td>${protest.size_mean === 11 ? '' : protest.size_mean}</td>
             `;
             
             tableBody.appendChild(row);
