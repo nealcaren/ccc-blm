@@ -153,10 +153,11 @@ def process_data():
         # Print some debug info about the arrests column
         print(f"Arrests column found. Sample values: {df['arrests'].head(10).tolist()}")
         print(f"Arrests column type: {df['arrests'].dtype}")
+        
+        # Convert arrests to numeric first, then check for non-zero values
+        df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
         
-        # Convert arrests to numeric, coercing errors to NaN, then fill NaN with 0
-        df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
         total_arrests = int(df['arrests'].sum())
         print(f"Total arrests calculated: {total_arrests}")
     else:
