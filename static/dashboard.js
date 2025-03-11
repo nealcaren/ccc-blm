@@ -44,6 +44,7 @@ async function loadData() {
         // Log data structure for debugging
         console.log('Data loaded:', dashboardData);
         console.log('Total arrests from data:', dashboardData.total_arrests);
+        console.log('Data type of total_arrests:', typeof dashboardData.total_arrests);
         console.log('Phase 1 sample:', dashboardData.phase1_monthly[0]);
         console.log('Phase 2 sample:', dashboardData.phase2_monthly[0]);
         console.log('Phase 3 sample:', dashboardData.phase3_monthly[0]);
@@ -80,6 +81,7 @@ function calculatePhaseTotals() {
     // We'll assume arrests are evenly distributed across phases for now
     // This is a simplification - in a real app, you'd want phase-specific arrest data
     const totalArrests = dashboardData.total_arrests || 0;
+    console.log('Total arrests from data:', totalArrests);
     const arrestsPerPhase = totalArrests / 5;
     
     phases.forEach((phase, index) => {
@@ -102,6 +104,7 @@ function calculatePhaseTotals() {
     });
     
     console.log('Phase totals calculated:', phaseTotals);
+    console.log('Arrests per phase:', arrestsPerPhase);
 }
 
 // Update summary statistics based on current phase
@@ -109,11 +112,22 @@ function updateSummaryStats() {
     // Use the totals for the current phase
     const protestTotal = phaseTotals.protests[currentPhase] || 0;
     const protesterTotal = phaseTotals.protesters[currentPhase] || 0;
-    const arrestTotal = phaseTotals.arrests[currentPhase] || 0;
+    
+    // For arrests, use the total from the data directly
+    // This ensures we display the actual value rather than the phase-calculated one
+    const arrestTotal = dashboardData.total_arrests || 0;
     
     document.getElementById('total-protests').textContent = protestTotal.toLocaleString();
     document.getElementById('total-protesters').textContent = protesterTotal.toLocaleString();
     document.getElementById('total-arrests').textContent = arrestTotal.toLocaleString();
+    
+    // Log for debugging
+    console.log('Updated summary stats:', {
+        protests: protestTotal,
+        protesters: protesterTotal,
+        arrests: arrestTotal,
+        rawArrestsValue: dashboardData.total_arrests
+    });
 }
 
 
