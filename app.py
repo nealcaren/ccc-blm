@@ -36,10 +36,13 @@ def process_data():
     
     # Create weekly protest counts
     df['week'] = df['date'].dt.strftime('%Y-%W')
+    # Create a location identifier by combining locality and state
+    df['location'] = df['locality'] + ', ' + df['state']
     weekly_counts = df.groupby('week').agg(
         count=('date', 'size'),
         start_date=('date', 'min'),
-        protester_count=('size_mean_imputed', 'sum')
+        protester_count=('size_mean_imputed', 'sum'),
+        locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
     weekly_counts['start_date'] = weekly_counts['start_date'].dt.strftime('%Y-%m-%d')
     
@@ -48,37 +51,52 @@ def process_data():
     
     # Phase 1: Beginning until July 2014
     phase1_data = df[df['date'] <= '2014-07-31']
+    # Create a location identifier by combining locality and state
+    phase1_data['location'] = phase1_data['locality'] + ', ' + phase1_data['state']
     phase1_monthly = phase1_data.groupby('month').agg(
         count=('date', 'size'),
-        size=('size_mean_imputed', 'sum')
+        size=('size_mean_imputed', 'sum'),
+        locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
     
     # Phase 2: August 2014 until December 2016
     phase2_data = df[(df['date'] > '2014-07-31') & (df['date'] <= '2016-12-31')]
+    # Create a location identifier by combining locality and state
+    phase2_data['location'] = phase2_data['locality'] + ', ' + phase2_data['state']
     phase2_monthly = phase2_data.groupby('month').agg(
         count=('date', 'size'),
-        size=('size_mean_imputed', 'sum')
+        size=('size_mean_imputed', 'sum'),
+        locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
     
     # Phase 3: January 2017 until April 2020
     phase3_data = df[(df['date'] > '2016-12-31') & (df['date'] <= '2020-04-30')]
+    # Create a location identifier by combining locality and state
+    phase3_data['location'] = phase3_data['locality'] + ', ' + phase3_data['state']
     phase3_monthly = phase3_data.groupby('month').agg(
         count=('date', 'size'),
-        size=('size_mean_imputed', 'sum')
+        size=('size_mean_imputed', 'sum'),
+        locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
     
     # Phase 4: Monthly counts May-October 2020 (Floyd protests)
     phase4_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')]
+    # Create a location identifier by combining locality and state
+    phase4_data['location'] = phase4_data['locality'] + ', ' + phase4_data['state']
     phase4_monthly = phase4_data.groupby('month').agg(
         count=('date', 'size'),
-        size=('size_mean_imputed', 'sum')
+        size=('size_mean_imputed', 'sum'),
+        locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
     
     # Phase 5: Monthly counts since November 2020
     phase5_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
+    # Create a location identifier by combining locality and state
+    phase5_data['location'] = phase5_data['locality'] + ', ' + phase5_data['state']
     phase5_monthly = phase5_data.groupby('month').agg(
         count=('date', 'size'),
-        size=('size_mean_imputed', 'sum')
+        size=('size_mean_imputed', 'sum'),
+        locations=('location', lambda x: len(set(x)))  # Count unique locations
     ).reset_index()
     
     # Create a sample of the data for the table view

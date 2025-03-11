@@ -144,9 +144,12 @@ function updateWeeklyChart() {
     if (currentDataType === 'count') {
         data = dashboardData.weekly_counts.map(item => item.count);
         label = 'Number of Protests';
-    } else {
+    } else if (currentDataType === 'protesters') {
         data = dashboardData.weekly_counts.map(item => item.protester_count);
         label = 'Number of Protesters';
+    } else {
+        data = dashboardData.weekly_counts.map(item => item.locations);
+        label = 'Unique Locations';
     }
     
     // Update chart data
@@ -253,9 +256,18 @@ function updatePhaseChart() {
     const descriptionElement = document.getElementById('phase-description');
     
     let data, labels, chartType, backgroundColors;
-    // For protester count, we'll use the size field from our data
-    const dataField = currentPhaseDataType === 'count' ? 'count' : 'size';
-    const dataLabel = currentPhaseDataType === 'count' ? 'Number of Protests' : 'Total Protesters';
+    // Select the appropriate data field based on the selected type
+    let dataField, dataLabel;
+    if (currentPhaseDataType === 'count') {
+        dataField = 'count';
+        dataLabel = 'Number of Protests';
+    } else if (currentPhaseDataType === 'protesters') {
+        dataField = 'size';
+        dataLabel = 'Total Protesters';
+    } else {
+        dataField = 'locations';
+        dataLabel = 'Unique Locations';
+    }
     
     console.log('Using data field:', dataField);
     
