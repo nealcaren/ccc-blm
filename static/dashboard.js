@@ -724,18 +724,31 @@ function processAnnualData() {
     });
     
     
-    // Process arrests data from table_data
+    // Process arrests data from table_data after applying filters
     dashboardData.table_data.forEach(protest => {
         if (protest.date && protest.arrests) {
+            // Check if this is one of the events to be zeroed out
+            const shouldZero = (
+                (protest.date === '2015-04-01' && protest.locality === 'Baltimore' && protest.state === 'MD') ||
+                (protest.date === '2020-05-29' && protest.locality === 'Omaha' && protest.state === 'NE') ||
+                (protest.date === '2016-07-05' && protest.locality === 'Baton Rouge' && protest.state === 'LA') ||
+                (protest.date === '2016-07-07' && protest.locality === 'Baton Rouge' && protest.state === 'LA') ||
+                (protest.date === '2016-07-13' && protest.locality === 'Baton Rouge' && protest.state === 'LA') ||
+                (protest.date === '2014-11-26' && protest.locality === 'Los Angeles' && protest.state === 'CA') ||
+                (protest.date === '2013-06-17' && protest.locality === 'Raleigh' && protest.state === 'NC')
+            );
+
+            const arrestValue = shouldZero ? 0 : (protest.arrests || 0);
             const year = protest.date.substring(0, 4);
+            
             if (annualData.years.includes(year)) {
-                annualData.arrests[year] += protest.arrests || 0;
+                annualData.arrests[year] += arrestValue;
                 if (protest.locality && protest.state) {
                     const location = `${protest.locality}, ${protest.state}`;
                     if (!annualData.locationArrests[year][location]) {
                         annualData.locationArrests[year][location] = 0;
                     }
-                    annualData.locationArrests[year][location] += protest.arrests;
+                    annualData.locationArrests[year][location] += arrestValue;
                 }
             }
         }
