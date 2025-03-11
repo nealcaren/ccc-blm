@@ -148,7 +148,9 @@ def process_data():
     total_protesters = int(df['size_mean_imputed'].sum())
     
     # Calculate total arrests
-    total_arrests = int(df['arrests'].fillna(0).sum())
+    # Convert arrests to numeric, coercing errors to NaN, then fill NaN with 0
+    df['arrests'] = pd.to_numeric(df['arrests'], errors='coerce').fillna(0)
+    total_arrests = int(df['arrests'].sum())
     
     # Calculate daily protester counts
     daily_protester_counts = df.groupby('date').agg(
