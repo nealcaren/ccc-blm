@@ -6,8 +6,8 @@ import os
 def process_data():
     """Process the CSV data and create a JSON file for the dashboard"""
     # Read both CSV files
-    csv_path1 = 'police_brutality_protests.csv'
-    csv_path2 = 'police_brutality_protests_newsbank_prepped.csv'
+    csv_path1 = './police_brutality_protests.csv'
+    csv_path2 = './police_brutality_protests_newsbank_prepped.csv'
     
     # Check if both files exist
     df1 = pd.read_csv(csv_path1, low_memory=False) if os.path.exists(csv_path1) else pd.DataFrame()
