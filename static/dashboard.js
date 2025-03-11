@@ -234,8 +234,8 @@ function updatePhaseChart() {
     const descriptionElement = document.getElementById('phase-description');
     
     let data, labels, chartType, backgroundColors;
-    // For protester count, we'll use 'participants' field if it exists, otherwise fall back to our estimation
-    const dataField = currentPhaseDataType === 'count' ? 'count' : 'protesters';
+    // For protester count, we'll use the size field from our data
+    const dataField = currentPhaseDataType === 'count' ? 'count' : 'size';
     const dataLabel = currentPhaseDataType === 'count' ? 'Number of Protests' : 'Total Protesters';
     
     console.log('Using data field:', dataField);
@@ -247,24 +247,8 @@ function updatePhaseChart() {
         const countType = currentPhaseDataType === 'count' ? 'protest counts' : 'protester counts';
         descriptionElement.textContent = `Monthly ${countType} before George Floyd's death (up to April 2020).`;
         
-        // For protester counts, use size data
-        data = dashboardData.phase1_monthly.map(item => {
-            if (dataField === 'protesters') {
-                // Use size data if available
-                if (item.size !== undefined) {
-                    return item.size;
-                } else if (item.participants !== undefined) {
-                    return item.participants;
-                } else if (item.protester_count !== undefined) {
-                    return item.protester_count;
-                } else {
-                    console.warn('Protester count data not available for phase 1, using estimated values');
-                    // Estimate protester count as 100 times the count for demonstration
-                    return item.count * 100;
-                }
-            }
-            return item.count || 0;
-        });
+        // Use the data field directly from our processed data
+        data = dashboardData.phase1_monthly.map(item => item[dataField] || 0);
         labels = dashboardData.phase1_monthly.map(item => item.month);
         chartType = 'bar';
         backgroundColors = '#1b9e77'; // Green for Phase 1
@@ -288,23 +272,9 @@ function updatePhaseChart() {
         // Create a lookup for counts
         const countLookup = {};
         
-        // Helper function to set count lookup values
+        // Helper function to set count lookup values - now simplified
         const setCountValue = (item) => {
-            if (dataField === 'protesters') {
-                // Try different possible field names for protester counts
-                if (item.size !== undefined) {
-                    countLookup[item.month] = item.size;
-                } else if (item.participants !== undefined) {
-                    countLookup[item.month] = item.participants;
-                } else if (item.protester_count !== undefined) {
-                    countLookup[item.month] = item.protester_count;
-                } else {
-                    // Estimate protester count as 100 times the count for demonstration
-                    countLookup[item.month] = item.count * 100;
-                }
-            } else {
-                countLookup[item.month] = item.count || 0;
-            }
+            countLookup[item.month] = item[dataField] || 0;
         };
         
         phase1Data.forEach(setCountValue);
@@ -346,23 +316,9 @@ function updatePhaseChart() {
         // Create a lookup for counts
         const countLookup = {};
         
-        // Helper function to handle missing protester count data
+        // Helper function to handle protester count data - now simplified
         const setCountLookup = (item) => {
-            if (dataField === 'protesters') {
-                // Try different possible field names for protester counts
-                if (item.size !== undefined) {
-                    countLookup[item.month] = item.size;
-                } else if (item.participants !== undefined) {
-                    countLookup[item.month] = item.participants;
-                } else if (item.protester_count !== undefined) {
-                    countLookup[item.month] = item.protester_count;
-                } else {
-                    // Estimate protester count as 100 times the count for demonstration
-                    countLookup[item.month] = item.count * 100;
-                }
-            } else {
-                countLookup[item.month] = item.count || 0;
-            }
+            countLookup[item.month] = item[dataField] || 0;
         };
         
         phaseData.phase1.forEach(setCountLookup);

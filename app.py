@@ -48,18 +48,24 @@ def process_data():
     
     # Phase 1: Monthly counts up to April 2020
     phase1_data = df[df['date'] <= '2020-04-30']
-    phase1_monthly = phase1_data.groupby('month').size().reset_index()
-    phase1_monthly.columns = ['month', 'count']
+    phase1_monthly = phase1_data.groupby('month').agg(
+        count=('date', 'size'),
+        size=('size_mean_imputed', 'sum')
+    ).reset_index()
     
     # Phase 2: Monthly counts May-October 2020 (Floyd protests)
     phase2_data = df[(df['date'] > '2020-04-30') & (df['date'] <= '2020-10-31')]
-    phase2_monthly = phase2_data.groupby('month').size().reset_index()
-    phase2_monthly.columns = ['month', 'count']
+    phase2_monthly = phase2_data.groupby('month').agg(
+        count=('date', 'size'),
+        size=('size_mean_imputed', 'sum')
+    ).reset_index()
     
     # Phase 3: Monthly counts since November 2020
     phase3_data = df[df['date'] > '2020-10-31'].copy()  # Create a proper copy
-    phase3_monthly = phase3_data.groupby('month').size().reset_index()
-    phase3_monthly.columns = ['month', 'count']
+    phase3_monthly = phase3_data.groupby('month').agg(
+        count=('date', 'size'),
+        size=('size_mean_imputed', 'sum')
+    ).reset_index()
     
     # Create a sample of the data for the table view
     # Select relevant columns
