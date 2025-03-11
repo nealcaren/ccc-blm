@@ -260,13 +260,13 @@ def process_data():
         
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
         
-        # Print June 2013 arrests
-        june_2013_arrests = df[
-            (df['date'].dt.to_period('M') == pd.Period('2013-06'))
+        # Print January 2012 arrests
+        jan_2012_arrests = df[
+            (df['date'].dt.to_period('M') == pd.Period('2012-01'))
             & (df['arrests'] > 0)
         ][['date', 'locality', 'state', 'arrests']]
-        print("\nJune 2013 arrests:")
-        print(june_2013_arrests.to_string())
+        print("\nJanuary 2012 arrests:")
+        print(jan_2012_arrests.to_string())
         
         # Print the top 50 highest arrest values for verification
         top_arrests = df.nlargest(50, 'arrests')[['date', 'locality', 'state', 'arrests']]
