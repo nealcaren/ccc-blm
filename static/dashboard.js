@@ -287,8 +287,7 @@ function initializePhaseChart() {
                     intersect: false
                 },
                 legend: {
-                    display: true,
-                    position: 'top'
+                    display: false
                 }
             }
         }
