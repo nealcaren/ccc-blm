@@ -49,7 +49,6 @@ def process_data():
         ((df['date'] == '2016-07-07') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
         ((df['date'] == '2016-07-13') & (df['locality'] == 'Baton Rouge') & (df['state'] == 'LA')) |
         ((df['date'] == '2014-11-26') & (df['locality'] == 'Los Angeles') & (df['state'] == 'CA')) |
-        ((df['date'] == '2013-06-17') & (df['locality'] == 'Raleigh') & (df['state'] == 'NC')) |
         ((df['date'] == '2012-01-28') & (df['locality'] == 'Oakland') & (df['state'] == 'CA'))
     )
     
@@ -261,13 +260,13 @@ def process_data():
         
         print(f"Number of non-zero arrest values: {(df['arrests'] > 0).sum()}")
         
-        # Print January 2012 arrests
-        jan_2012_arrests = df[
-            (df['date'].dt.to_period('M') == pd.Period('2012-01'))
+        # Print March 2013 arrests
+        mar_2012_arrests = df[
+            (df['date'].dt.to_period('M') == pd.Period('2012-03'))
             & (df['arrests'] > 0)
         ][['date', 'locality', 'state', 'arrests']]
-        print("\nJanuary 2012 arrests:")
-        print(jan_2012_arrests.to_string())
+        print("\nMarch 2012 arrests:")
+        print(mar_2012_arrests.to_string())
         
         # Print the top 50 highest arrest values for verification
         top_arrests = df.nlargest(50, 'arrests')[['date', 'locality', 'state', 'arrests']]
